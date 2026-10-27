@@ -1,0 +1,33 @@
+{
+  "model": "Periodic D-MPNN trimer ensemble",
+  "budget_total_development_records": 1000,
+  "fit_records_per_seed": 600,
+  "training_rdkit": "2026.03.3",
+  "training_torch": "2.14.1",
+  "units": "W/(m K)",
+  "temperature_K": 300,
+  "pressure_atm": 1,
+  "weights": [
+    {
+      "seed": 20261111,
+      "file": "cluster_holdout_s20261111_L1000_periodic_trimer.pt",
+      "sha256": "6ada759dcf40874615abd5c02db8f4773a9eddb065961d1afda0c419c514bb84",
+      "target_mean": 0.23533281321333333,
+      "target_sd_ddof0": 0.05236548019406365
+    },
+    {
+      "seed": 20261112,
+      "file": "cluster_holdout_s20261112_L1000_periodic_trimer.pt",
+      "sha256": "fd6be2985b857f7ff39273a051c738f7cad6a3d570c9c60d3ce59e70f9ea17c6",
+      "target_mean": 0.23602925009166664,
+      "target_sd_ddof0": 0.0554271376547218
+    },
+    {
+      "seed": 20261113,
+      "file": "cluster_holdout_s20261113_L1000_periodic_trimer.pt",
+      "sha256": "3850245265bf91bbf5a60c8ca9abfb4c34d44945f36479921a1b84ec913f6337",
+      "target_mean": 0.23723134507666666,
+      "target_sd_ddof0": 0.05512714786439274
+    }
+  ]
+}
