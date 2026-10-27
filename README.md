@@ -41,7 +41,7 @@ Each successful result includes the mean of three predictions, the individual se
 python -m unittest discover -s tests -v
 ```
 
-The locked training environment used Python 3.12.14, PyTorch 2.14.1, NumPy 2.5.4 and RDKit 2026.03.3. Six local tests also passed with RDKit 2025.09.6 on the same Python/PyTorch environment, including four reference structures. A clean macOS ARM64 Python 3.12 installation selected RDKit 2026.09.1 and passed single and batch smoke tests. The strict RDKit version rejection has been removed. Other versions are allowed but emit a warning because graph sanitization and features can change between versions; verify compatibility for your structures. See `tests/golden_predictions.json` for reference predictions from the original locked implementation. CI configuration is provided; the remote CI matrix has not yet run.
+The locked training environment used Python 3.12.14, PyTorch 2.14.1, NumPy 2.5.4 and RDKit 2026.03.3. Six local tests also passed with RDKit 2025.09.6 on the same Python/PyTorch environment, including four reference structures. A clean macOS ARM64 Python 3.12 installation selected RDKit 2026.09.1 and passed single and batch smoke tests. The strict RDKit version rejection has been removed. Other versions are allowed but emit a warning because graph sanitization and features can change between versions; verify compatibility for your structures. See `tests/golden_predictions.json` for reference predictions from the original locked implementation. The GitHub Actions matrix completed successfully for Python 3.10, 3.11 and 3.12 on commit 64f3f57.
 
 ## Provenance and citation
 
