@@ -26,7 +26,8 @@ def _read_batch(path: Path, column: str) -> list[dict]:
 
 def _write_csv(results: list[dict], stream) -> None:
     fields = ["input_row", "input_id", "smiles", "success", "predicted_kappa_W_mK",
-              "seed_std_W_mK", "per_seed_predictions_W_mK", "seed_std_note", "error"]
+              "seed_std_W_mK", "per_seed_predictions_W_mK", "seed_std_note", "model_id",
+              "seed", "high_kappa_classification_logit", "error"]
     writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
     writer.writeheader()
     for item in results:
@@ -39,19 +40,29 @@ def _write_csv(results: list[dict], stream) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Predict amorphous polymer thermal conductivity at 300 K and 1 atm.")
     group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--list-models", action="store_true", help="List individual manuscript checkpoint identifiers")
     group.add_argument("--smiles", help="Repeat-unit SMILES with two terminal * connection points")
     group.add_argument("--batch", type=Path, help="UTF-8 text file or CSV containing a smiles column")
+    parser.add_argument("--paper-model", help="Use one saved paper model instead of the original three-model ensemble")
     parser.add_argument("--column", default="smiles", help="CSV column containing repeat-unit SMILES")
     parser.add_argument("--format", choices=("json", "csv"), default="json", help="Output format")
     parser.add_argument("--output", type=Path, help="Write results to this file instead of stdout")
     args = parser.parse_args(argv)
 
     try:
+        if args.list_models:
+            from .paper import paper_registry
+            print("\n".join(sorted(paper_registry()["models"])))
+            return 0
         inputs = ([{"input_row": 1, "input_id": "", "smiles": args.smiles}]
                   if args.smiles is not None else _read_batch(args.batch, args.column))
         if not inputs:
             raise ValueError("batch contains no input rows")
-        predictor = PolymerThermalPredictor()
+        if args.paper_model:
+            from .paper import PaperPredictor
+            predictor = PaperPredictor(args.paper_model)
+        else:
+            predictor = PolymerThermalPredictor()
         results = []
         for item in inputs:
             result = predictor.predict_one(item["smiles"])

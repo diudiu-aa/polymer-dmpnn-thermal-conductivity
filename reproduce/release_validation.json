@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-28",
+  "scope": "Local verification of release 0.2.0 before public clean-download retest",
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.14.1",
+    "numpy": "2.5.4",
+    "rdkit": "2026.03.3",
+    "device": "CPU",
+    "threads": 1
+  },
+  "saved_checkpoint_verification": {
+    "checkpoint_count": 65,
+    "record_predictions": 26000,
+    "max_absolute_prediction_difference": 0.0,
+    "all_pass": true
+  },
+  "unchanged_recipe_training_repeats": [
+    {
+      "experiment": "table4_B60_periodic_32101",
+      "epochs": 50,
+      "weight_max_abs_difference": 0.0,
+      "prediction_max_abs_difference": 0.0,
+      "n": 400,
+      "same_fixed_recipe_no_tuning": true
+    },
+    {
+      "model": "table5_B600_multitask_32101",
+      "epochs": 50,
+      "weight_max_abs_difference": 0.0,
+      "prediction_max_abs_difference": 0.0,
+      "classification_logit_max_abs_difference": 0.0,
+      "n": 400
+    },
+    {
+      "model": "table5_ridge_32101",
+      "selected": {
+        "alpha": 10.0
+      },
+      "prediction_max_abs_difference": 0.0,
+      "n": 400
+    }
+  ],
+  "tables": {
+    "groups": 117,
+    "rows": 40848,
+    "display_statistics": 182,
+    "mismatches": 0
+  },
+  "limits": "These three training repeats do not establish fresh training parity for every configuration or platform. Tables1/2 use saved-prediction replay. CI status is checked separately for each public commit."
+}

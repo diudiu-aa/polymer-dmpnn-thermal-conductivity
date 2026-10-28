@@ -1,4 +1,4 @@
-name: inference tests
+name: inference and paper reproduction
 on: [push, pull_request]
 jobs:
   test:
@@ -16,3 +16,11 @@ jobs:
       - run: python -m pip install .
       - run: python -m unittest discover -s tests -v
       - run: polymer-kappa --smiles '*CC*'
+      - run: python reproduce/paper_tables.py --verify --output reproduced-paper-tables
+      - run: python reproduce/evaluate_checkpoints.py --models table3_B600_periodic_32101 table5_B600_multitask_32101 --output checkpoint-verification
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reproduction-python-${{ matrix.python-version }}
+          path: |
+            reproduced-paper-tables/
+            checkpoint-verification/verification.json

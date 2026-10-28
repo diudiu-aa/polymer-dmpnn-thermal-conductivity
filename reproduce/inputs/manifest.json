@@ -1,0 +1,34 @@
+{
+  "format_version": 1,
+  "scope": "Fixed inputs for Tables 3-5 only; all derived from historical training partition, same-source MD. No PoLyInfo or original held-out test records. Table4 B600 reuses Table3 weights.",
+  "source": {
+    "dataset": "PolyOmics general_polymers",
+    "url": "https://huggingface.co/datasets/yhayashi1986/PolyOmics",
+    "revision": "041e5834ea1a48682fae12dc39ccd723bcd4f771",
+    "license": "CC-BY-4.0",
+    "doi": "10.57967/hf/7475",
+    "raw_sha256": "71e955ac1e90574ad009ccbf1238e595cf42905f3e600523ba2a6ea65c350213",
+    "metadata_sha256": "cbb9afe19c93a3fb8c896431e8cede534b4cd8092307fc96d639fa8a59b369ea",
+    "cluster_index_sha256": "cf23745c325eae8bd8c4b7c3f1735b3950df92a3a44d9c61ff324177b2299114"
+  },
+  "files": {
+    "records.csv.gz": {
+      "sha256": "19a0b565b3403d80c154ec0f879e93ea281627c492c61b8761e86d28b16748df",
+      "records": 14112
+    },
+    "splits.json": {
+      "sha256": "ae0e2882fce5f0d84a24764ee6016771b568f91b9f84d73ca47fbb30467c900b"
+    }
+  },
+  "record_order": "Training and evaluation order in splits.json is material; do not re-sort. Labels in W/(m K).",
+  "training_reference": {
+    "python": "3.12.14",
+    "torch": "2.14.1",
+    "numpy": "2.5.4",
+    "rdkit": "2026.03.3",
+    "device": "cpu",
+    "threads": 1,
+    "epochs": 50,
+    "batch_size": 16
+  }
+}

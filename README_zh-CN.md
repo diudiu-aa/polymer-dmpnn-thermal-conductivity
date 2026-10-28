@@ -1,69 +1,84 @@
-# 聚合物热导率周期图预测工具
+# 聚合物热导率模型与论文复现
 
+本仓库包含预测工具、论文**表1–5的逐条结果复算包**，以及主要模型的固定输入、
+划分、权重和训练入口。目标是约300 K、1 atm下未拉伸无定形体相的**模拟热导率**，
+单位W/(m K)，不能直接视为实验测量。
 
-本仓库提供已保存的 R04 周期三聚体 D-MPNN 模型集成，三份权重总计约 1 MB，可在 CPU 上预测。输出单位为 W/(m·K)，目标对应约 **300 K、1 atm、未拉伸的各向同性无定形聚合物体相模拟值**。仓库不包含训练数据。
-
-
-模型学习的是 PolyOmics/RadonPy 分子动力学计算结果，预测值不能直接当作实验测量值。OPC 结果是公开计算数据的回顾性评价。对于陌生结构和高导热候选，应结合进一步计算或实验验证。
-
-
-## 安装
-
-
-使用 Python 3.10–3.13，先安装 Python，然后在终端运行：
-
+## 下载后重算论文五张主表
 
 ```bash
 git clone https://github.com/diudiu-aa/polymer-dmpnn-thermal-conductivity.git
 cd polymer-dmpnn-thermal-conductivity
+python reproduce/paper_tables.py --verify --output reproduced-paper-tables
+```
+
+仅需Python 3.10及以上的标准库，无须安装模型，也不需要原作者的本机项目文件。
+程序从117组、40,848行保存预测和参考值重新计算182个均值/样本标准差，
+生成五张CSV/Markdown表、逐种子指标及`verification.json`。输出目录须为新目录。
+预期数值只用于核验，不作为生成表格的输入结果。
+
+## 安装与预测
+
+```bash
 python -m pip install .
-```
-
-
-安装命令需在仓库根目录运行；依赖也列在 `requirements.txt` 中。
-
-
-## 单条和批量预测
-
-
-重复单元 SMILES 需要恰好两个连接点 `*`，两个连接点都只能通过单键连接，并且结构需连通。终端中请用引号包住输入：
-
-
-```bash
 polymer-kappa --smiles '*CC*'
-python -m polymer_dmpnn --smiles '*CC(*)C'
-```
-
-
-批量 CSV 需要 `smiles` 列，可选 `id` 列：
-
-
-```bash
 polymer-kappa --batch examples/polymers.csv --format csv --output predictions.csv
 ```
 
+结构必须为连通的重复单元，恰好包含两个通过单键连接的末端`*`。
+默认使用早期三种子L1000周期模型集成，保持旧接口兼容。
+**三个模型预测的平均值，与论文“分别计算各种子指标再求平均”不是同一统计量。**
+输出的种子标准差不是校准后的预测区间。
 
-也可输入每行一条 SMILES 的 UTF-8 文本文件。`--column` 可指定 CSV 中的结构列，`--format json` 输出 JSON。无效结构会保留为错误行；只要有一行失败，程序退出状态为 2。
+可明确选择主研究中一个真实种子模型：
 
+```bash
+polymer-kappa --list-models
+polymer-kappa --paper-model table5_B600_multitask_32101 --smiles '*CC*'
+polymer-kappa --paper-model table5_B600_periodic_32101 --batch examples/polymers.csv
+```
 
-输出包含三个模型的预测、平均值和三个模型的总体标准差。**这个标准差不是经过校准的预测区间**。旧脚本中的固定保形区间未纳入本包。
+仓库另含65份表3–5模型权重：开链、周期、排序目标、学习曲线、平衡采样和双任务。
+权重逐字节保留，标准化参数和SHA256均可核对。双任务分类头输出原始排序分数，
+不是经过校准的高导热概率。
 
+## 权重核验与重新训练
 
-## 测试与兼容性
+```bash
+# 从65份保存权重重新推理，与已保存逐条结果核对。
+python reproduce/evaluate_checkpoints.py --output checkpoint-verification
 
+# 先核对固定训练配置；默认不训练。
+python reproduce/train_graph_models.py --experiment table5 --arm multitask --seed 32101
+
+# 显式启动该配置的50轮CPU训练。
+python reproduce/train_graph_models.py --experiment table5 --arm multitask --seed 32101 --run --output retrained-multitask
+```
+
+表3–5所需的固定训练/评价记录已经包含，无须私有的`--project-root`目录。
+Ridge/ExtraTrees的训练内分组调参见[详细复现说明](reproduce/README.md)，
+额外依赖通过`python -m pip install '.[reproduce]'`安装。
+
+目前覆盖：五张主表的保存预测复算、主要图模型的权重重新评价，以及表3–5从固定
+整理输入开始的训练配方。**不宣称从完整原始数据库重新构造整个历史研究**：
+旧结构聚类及角色生成、表1的GIN/GPR训练不在上述训练入口中；表1/2有保存结果复算。
+同源MD数据、公开OPC队列和复算成功均不等于独立实验验证。
+
+## 测试与来源
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
+CI覆盖Python 3.10/3.11/3.12的安装、推理、逐表复算和模型核验。
+原训练环境为Python 3.12.14、PyTorch 2.14.1、NumPy 2.5.4、RDKit 2026.03.3，CPU单线程。
+其他支持版本允许使用，但不同库可能带来数值差别；权重推理核验绝对容差为
+`1e-5 W/(m K)`。跨平台重训不承诺逐位一致，五表保存结果复算不依赖这些数值库。
 
-模型训练时使用 Python 3.12.14、PyTorch 2.14.1、NumPy 2.5.4 和 RDKit 2026.03.3；同一 Python/PyTorch 环境下，RDKit 2025.09.6 也通过了六项本地测试，包含四个参考结构。在 macOS ARM64 的干净 Python 3.12 环境中安装时，自动选用的 RDKit 2026.09.1 通过了单条和批量预测检查。代码已放宽 RDKit 的硬版本限制；其他版本允许安装，但兼容性尚未验证，运行时会提示版本差异；请先用参考结构检查结果。`tests/golden_predictions.json` 保存了原始锁定实现对四个示例的参考预测。GitHub Actions 的 Python 3.10、3.11、3.12 三版本矩阵已在提交 64f3f57 上全部通过。
+代码和项目权重为MIT许可；PolyOmics整理子集保留CC BY 4.0许可，OPC数据为MIT。
+来源、固定快照和修改说明见[数据许可与溯源](THIRD_PARTY_DATA.md)。
+未上传受限数据库、原始整库、论文或内部项目日志。请记录实际Git提交号来固定版本。
 
-
-## 来源
-
-
-三份 L1000 周期模型权重和各自目标标准化参数、SHA-256 均保存在 `polymer_dmpnn/weights/manifest.json`。模型使用 PolyOmics 数据，数据来源为 [DOI 10.57967/hf/7475](https://doi.org/10.57967/hf/7475) 和 [数据集页面](https://huggingface.co/datasets/yhayashi1986/PolyOmics)。D-MPNN 与周期聚合物图的先行文献及许可说明见英文 README 和 `NOTICE.md`。GitHub 仓库地址为 https://github.com/diudiu-aa/polymer-dmpnn-thermal-conductivity；目前尚未申请归档 DOI。
-
-
-严格结构簇五种子训练与评价入口、额外依赖及所需预处理输入见 [复现说明](reproduce/README.md)。从原始数据库完整生成预处理表的代码仍待整理。
+本次原环境实测：65份权重的26,000条推理结果全部与保存值一致；60标签周期模型、
+600标签双任务模型和Ridge的三个固定配置复跑，也与原结果一致。
+详见[验证记录](reproduce/release_validation.json)。这不是全部配置跨平台重训保证。

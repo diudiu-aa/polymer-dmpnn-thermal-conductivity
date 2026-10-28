@@ -1,57 +1,123 @@
-# Polymer D-MPNN thermal-conductivity predictor
+# Polymer D-MPNN thermal-conductivity models and paper reproduction
 
-This repository contains a small, CPU-ready inference package for the saved R04 periodic-trimer D-MPNN ensemble. It predicts the simulated thermal conductivity of a nominally unstrained, isotropic amorphous polymer near **300 K and 1 atm**, in W/(m·K). Three model weights (about 1 MB in total) are included; no training data are bundled.
+CPU inference, saved-result reproduction of **manuscript Tables 1–5**, and
+fixed-input training for the main graph experiments. Targets are simulated
+thermal conductivity of nominally unstrained amorphous polymers near **300 K,
+1 atm**, in **W/(m K)**. [中文说明](README_zh-CN.md).
 
-The models were fitted to PolyOmics/RadonPy molecular-dynamics data. Their outputs estimate the simulation target, not measured experimental conductivity. The public OPC assessment is retrospective; it is not a blind or experimental validation. Treat predictions for unfamiliar structures and high-conductivity candidates as screening estimates requiring further verification.
-
-## Install
-
-Use Python 3.10–3.13 and a platform supported by PyTorch and RDKit:
+## Reproduce all five tables — no model installation needed
 
 ```bash
 git clone https://github.com/diudiu-aa/polymer-dmpnn-thermal-conductivity.git
 cd polymer-dmpnn-thermal-conductivity
+python reproduce/paper_tables.py --verify --output reproduced-paper-tables
+```
+
+Python 3.10+ and its standard library suffice. The command recalculates 182
+means/sample standard deviations from 117 saved prediction groups (40,848
+rows), verifies them against the manuscript, and writes five CSV/Markdown
+tables, per-seed metrics and `verification.json`. All inputs are included.
+No private project directory, account, network, or raw database is needed.
+The output directory must be new. Expected statistics verify the calculation;
+they are not copied as generated results.
+
+## Install and predict
+
+```bash
 python -m pip install .
-```
-
-For development, `python -m pip install -e .` installs the same dependencies. The runtime requirements are also listed in `requirements.txt`.
-
-## Predict
-
-Repeat-unit SMILES must contain **exactly two degree-one `*` connection points**, both connected by single bonds, in one connected structure. Quote the SMILES in a shell:
-
-```bash
 polymer-kappa --smiles '*CC*'
-python -m polymer_dmpnn --smiles '*CC(*)C'
-```
-
-For a CSV file with a `smiles` column and an optional `id` column:
-
-```bash
 polymer-kappa --batch examples/polymers.csv --format csv --output predictions.csv
 ```
 
-Plain UTF-8 text files with one SMILES per nonempty line are also accepted. Use `--column` to choose a different CSV column and `--format json` for JSON output. Invalid entries are preserved as error rows; the CLI exits with status 2 if any entry fails.
+Use Python 3.10–3.13 on a platform supported by RDKit/PyTorch. Exactly two
+single-bonded, degree-one `*` connection points in one connected repeat unit
+are required. Quote SMILES in the shell. `--column` changes the CSV structure
+column. Invalid entries remain as error rows (exit 2 if any row fails).
 
-Each successful result includes the mean of three predictions, the individual seed predictions, and their population standard deviation. The seed standard deviation describes only the three saved models; **it is not a calibrated prediction interval or a guarantee of accuracy**. The package does not expose the earlier provisional conformal interval.
+The default remains the original three-seed L1000 periodic ensemble (Table 1
+model family; 600 fitting records per seed). Its output includes individual
+predictions, mean, and population SD. **Ensemble prediction metrics differ
+from the paper's mean of separately calculated seed metrics.** The SD is not
+a calibrated prediction interval.
 
-## Tests and compatibility
+Select an actual individual main-study checkpoint explicitly:
+
+```bash
+polymer-kappa --list-models
+polymer-kappa --paper-model table5_B600_multitask_32101 --smiles '*CC*'
+polymer-kappa --paper-model table5_B600_periodic_32101 --batch examples/polymers.csv
+```
+
+The 65 individual graph checkpoints cover Tables 3–5: open/periodic/ranking,
+nested learning budgets, and the balanced/multitask comparison. They retain
+the original bytes, target scaling, seed, and SHA256. Multitask classification
+outputs are raw ranking logits, not calibrated probabilities. The regression
+model does not guarantee high-conductivity screening or experimental accuracy.
+
+## Verify weights or train from fixed inputs
+
+```bash
+# Re-run all 65 saved checkpoints on their fixed 400-record evaluation sets.
+python reproduce/evaluate_checkpoints.py --output checkpoint-verification
+
+# Inspect a fixed training configuration; no fitting by default.
+python reproduce/train_graph_models.py --experiment table5 --arm multitask --seed 32101
+
+# Explicit 50-epoch CPU reproduction of that single configuration.
+python reproduce/train_graph_models.py --experiment table5 --arm multitask --seed 32101 --run --output retrained-multitask
+```
+
+The fixed training inputs and roles are bundled. There is no `--project-root`
+requirement. For Ridge/ExtraTrees training-only grouped tuning, install
+`python -m pip install '.[reproduce]'` and see [reproduce/README.md](reproduce/README.md).
+
+| Reproduction level | Included / verified scope |
+|---|---|
+| Saved-prediction metrics | All five main tables; 182 displayed mean/SD values |
+| Saved graph checkpoint evaluation | All 65 Table 3–5 fits, fixed roles, scales, original predictions |
+| Training from fixed curated inputs | Graph recipes for Tables 3–5 and tuned Table 5 Ridge/ExtraTrees; explicit `--run` |
+| Entire raw-to-curated historical study | Not claimed: historical cluster/role construction and Table 1 GIN/GPR training are not rebuilt by these commands |
+
+Table 4's 600-fit point reuses Table 3. Table 2 is a retrospective public OPC
+cohort; its MAE weights clusters equally, not records. Five-seed samples can
+share records and evaluation clusters. A successful saved-result replay is
+not an independent replication of the original MD simulations.
+
+## Tests, environment and versioning
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-The locked training environment used Python 3.12.14, PyTorch 2.14.1, NumPy 2.5.4 and RDKit 2026.03.3. Six local tests also passed with RDKit 2025.09.6 on the same Python/PyTorch environment, including four reference structures. A clean macOS ARM64 Python 3.12 installation selected RDKit 2026.09.1 and passed single and batch smoke tests. The strict RDKit version rejection has been removed. Other versions are allowed but emit a warning because graph sanitization and features can change between versions; verify compatibility for your structures. See `tests/golden_predictions.json` for reference predictions from the original locked implementation. The GitHub Actions matrix completed successfully for Python 3.10, 3.11 and 3.12 on commit 64f3f57.
+CI tests installation, inference, published table reproduction and checkpoint
+parity on Python 3.10/3.11/3.12. The original model environment was Python
+3.12.14 / PyTorch 2.14.1 / NumPy 2.5.4 / RDKit 2026.03.3, CPU, one thread.
+Other supported versions are allowed; RDKit sanitization and numerical
+libraries may change outputs. Saved predictions make table reproduction
+independent of those differences. Checkpoint parity tolerance is absolute
+`1e-5 W/(m K)`; training bit-for-bit parity across library/platform versions
+is not promised. Record the Git commit with every reproduced result.
 
-## Provenance and citation
+## Sources and licenses
 
-The model ensemble uses three saved L1000 periodic-trimer fits, with 600 fit records per seed and 200 records each assigned to calibration and evaluation in the original design. Weight hashes and per-seed target standardization values are recorded in `polymer_dmpnn/weights/manifest.json`. The implementation follows the directed-message-passing family and the periodic repeat-unit representation; it does not claim to introduce either idea.
+Code and project weights: MIT. Curated PolyOmics excerpts: CC BY 4.0;
+OPC source data: MIT. Original UUIDs, fixed snapshot, hashes and modifications
+are documented in [THIRD_PARTY_DATA.md](THIRD_PARTY_DATA.md) and manifests.
+No PoLyInfo exports, restricted experimental tables, paper PDFs or private
+project logs are included. No archival DOI has been assigned to this repo.
 
-- PolyOmics dataset: [DOI 10.57967/hf/7475](https://doi.org/10.57967/hf/7475), [dataset card](https://huggingface.co/datasets/yhayashi1986/PolyOmics).
-- D-MPNN reference: Yang et al., *J. Chem. Inf. Model.* 2019, [DOI 10.1021/acs.jcim.9b00237](https://doi.org/10.1021/acs.jcim.9b00237).
-- Periodic polymer graph reference: Antoniuk et al., *J. Chem. Inf. Model.* 2022, [DOI 10.1021/acs.jcim.2c00875](https://doi.org/10.1021/acs.jcim.2c00875).
+- PolyOmics: [DOI 10.57967/hf/7475](https://doi.org/10.57967/hf/7475).
+- Yang et al., D-MPNN, *JCIM* 2019: [10.1021/acs.jcim.9b00237](https://doi.org/10.1021/acs.jcim.9b00237).
+- Antoniuk et al., periodic polymer graphs, *JCIM* 2022: [10.1021/acs.jcim.2c00875](https://doi.org/10.1021/acs.jcim.2c00875).
 
-See `NOTICE.md` for data attribution and the scope of this release. The repository provides inference and selected model-comparison utilities; it does not redistribute the source data or the complete raw-to-curated workflow. No archival DOI has been assigned.
+This repository evaluates existing representation/learning ideas on the
+thermal-conductivity task; it does not claim to invent periodic polymer graphs.
 
+### Local release validation
 
-For the paired five-seed training/evaluation entry point and required prepared input tables, see [reproduce/README.md](reproduce/README.md). The full raw-to-curated reconstruction remains to be packaged.
+In the recorded original CPU environment, all 65 checkpoint evaluations
+(26,000 predictions) matched the original saved values exactly. Representative
+unchanged-recipe retraining also matched for a 60-label periodic graph model,
+the 600-label multitask model, and tuned Ridge (seed 32101). These checks are
+recorded in [release_validation.json](reproduce/release_validation.json);
+they do not claim that every configuration was retrained on every platform.

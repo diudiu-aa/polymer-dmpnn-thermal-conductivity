@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "polymer-dmpnn-kappa"
-version = "0.1.0"
+version = "0.2.0"
 description = "Periodic D-MPNN inference for amorphous polymer thermal conductivity"
 requires-python = ">=3.10,<3.14"
 dependencies = ["numpy>=1.26,<3", "rdkit>=2024.3,<2027", "torch>=2.6,<3"]
 
 [project.optional-dependencies]
-reproduce = ["scipy>=1.10,<2"]
+reproduce = ["scipy>=1.10,<2", "scikit-learn>=1.4,<2"]
 
 [project.scripts]
 polymer-kappa = "polymer_dmpnn.__main__:main"
@@ -19,4 +19,4 @@ polymer-kappa = "polymer_dmpnn.__main__:main"
 include = ["polymer_dmpnn*"]
 
 [tool.setuptools.package-data]
-polymer_dmpnn = ["weights/*.pt", "weights/*.json"]
+polymer_dmpnn = ["weights/*.pt", "weights/*.json", "paper_weights/*.pt", "paper_weights/*.json"]
