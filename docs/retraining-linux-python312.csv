@@ -1,0 +1,5 @@
+Model,MAE (W m⁻¹ K⁻¹),R²,Tail MAE (W m⁻¹ K⁻¹),Precision@10,Precision@100
+"Open D-MPNN, post hoc",0.02321 ± 0.00160,0.5519 ± 0.0459,0.05335 ± 0.00640,24.0 ± 8.9%,71.0 ± 2.0%
+Periodic D-MPNN,0.02216 ± 0.00148,0.5861 ± 0.0392,0.05090 ± 0.00674,28.0 ± 8.4%,72.2 ± 1.6%
+"Periodic + multitask, regression ranking",0.02265 ± 0.00143,0.5745 ± 0.0213,0.04915 ± 0.00658,28.0 ± 8.4%,73.4 ± 2.9%
+"Periodic + multitask, classifier ranking",—,—,—,26.0 ± 5.5%,72.2 ± 3.1%

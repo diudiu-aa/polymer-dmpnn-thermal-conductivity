@@ -32,6 +32,8 @@ python reproduce/train_from_scratch.py --paper-settings --output paper-main-resu
 首次界面启动需联网安装依赖并保持终端运行；后续复用.ui-venv。计算在本机完成，
 无须API密钥。输出目录须为新目录。详细操作见[中文教程](docs/USER_GUIDE_zh-CN.md)。
 
+**实际跨平台结果：**Linux Python 3.10/3.11/3.12均完成15组重训；整体MAE与原论文相差不到1%，上述核心均值比较关系保持，但小数并非逐项完全一致。这是已测结果，不是任意环境的通过保证。详见[实际重训结果与解释](docs/REPRODUCIBILITY.md)。
+
 ![论文原设置实际运行结果](docs/paper-results.png)
 
 ## 文件导航与下载
