@@ -4,6 +4,17 @@
 划分、权重和训练入口。目标是约300 K、1 atm下未拉伸无定形体相的**模拟热导率**，
 单位W/(m K)，不能直接视为实验测量。
 
+## 文件导航与下载
+
+- [五表复算数据](reproduce/data/)：保存的预测、已评价参考值及其清单。
+- [训练输入与字段说明](reproduce/inputs/README.md)：14,112条整理记录、固定划分、读取方法。
+- [论文模型权重](polymer_dmpnn/paper_weights/)：65份表3–5图模型参数。
+- [输入CSV示例](examples/polymers.csv)：自己的数据按该格式填写。
+
+可通过仓库绿色 **Code → Download ZIP** 下载并解压整个项目；不要仅下载单个脚本。
+在解压后的仓库根目录打开终端，再运行下列命令。`.csv.gz`是已包含在下载包里的压缩CSV，
+网页不展开其内容，程序可以直接读取。部分macOS环境中请将命令的`python`换成`python3`。
+
 ## 下载后重算论文五张主表
 
 ```bash
@@ -16,6 +27,16 @@ python reproduce/paper_tables.py --verify --output reproduced-paper-tables
 程序从117组、40,848行保存预测和参考值重新计算182个均值/样本标准差，
 生成五张CSV/Markdown表、逐种子指标及`verification.json`。输出目录须为新目录。
 预期数值只用于核验，不作为生成表格的输入结果。
+
+成功时终端显示：
+
+```text
+Recomputed Tables 1–5: 182 displayed statistics from 117 saved prediction groups; verified=True
+```
+
+在`reproduced-paper-tables/`打开`table_1.csv`至`table_5.csv`查看重算值。
+这一步只复算指标，不训练，也不需要先安装PyTorch。重复运行时使用新的输出目录名。
+
 
 ## 安装与预测
 

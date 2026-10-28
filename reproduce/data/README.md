@@ -27,9 +27,10 @@ Original structural-cluster IDs are retained for cluster-macro MAE. Source:
 public computational cohort, not experimental validation.
 
 The gzip includes group ID, record ID, OPC cluster ID where applicable,
-evaluation reference value, prediction, and optional classifier score. No full
-source database, training-label table, PoLyInfo export, restricted experimental
-labels, manuscript document or internal project log is bundled. Fixed q95
+evaluation reference value, prediction, and optional classifier score. This directory does not contain the full source database, a training-label
+table, PoLyInfo exports, restricted experimental labels, manuscript documents
+or internal project logs. The separately bundled fixed training/evaluation
+inputs are in [../inputs/](../inputs/). Fixed q95
 thresholds are metadata from the original training sets.
 
 Source data retain their applicable license and attribution terms. The release

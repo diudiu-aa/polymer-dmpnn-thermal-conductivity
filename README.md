@@ -1,5 +1,73 @@
 # Polymer D-MPNN thermal-conductivity models and paper reproduction
 
+**中文快速开始在本页下方。** [完整中文教程](README_zh-CN.md) · [复现数据](reproduce/data/) · [训练输入与划分](reproduce/inputs/) · [65份论文模型权重](polymer_dmpnn/paper_weights/) · [示例CSV](examples/polymers.csv)
+
+## 第一次使用 从这里开始
+
+下载整个仓库：点击 **Code → Download ZIP** 并解压，或使用下面的 `git clone`。
+在解压后的仓库根目录打开终端，需要 Python 3.10 或以上版本；已测试3.10、3.11、3.12。
+以下命令中的 `python` 应指向该Python安装（部分macOS使用 `python3`）。
+
+### 先重算论文表1–5 不需要安装机器学习依赖
+
+```bash
+git clone https://github.com/diudiu-aa/polymer-dmpnn-thermal-conductivity.git
+cd polymer-dmpnn-thermal-conductivity
+python reproduce/paper_tables.py --verify --output reproduced-paper-tables
+```
+
+如果已下载并解压ZIP，从第三行运行。成功时终端显示：
+
+```text
+Recomputed Tables 1–5: 182 displayed statistics from 117 saved prediction groups; verified=True
+```
+
+新生成的 `reproduced-paper-tables/` 中包含 `table_1.csv` 至 `table_5.csv`、
+对应Markdown表格、逐种子指标和 `verification.json`。输出目录必须是新目录，
+重复运行时请换一个名称。**这是从保存预测重新计算指标，不是重新训练。**
+
+### 再用自己的结构预测热导率
+
+```bash
+python -m pip install .
+python -m polymer_dmpnn --paper-model table5_B600_periodic_32101 --smiles '*CC*'
+python -m polymer_dmpnn --paper-model table5_B600_periodic_32101 --batch examples/polymers.csv --format csv --output predictions.csv
+```
+
+`table5_B600_periodic_32101` 是论文表5的一个周期模型种子。也可选择
+`table5_B600_multitask_32101`；运行 `python -m polymer_dmpnn --list-models` 查看全部标识。
+自己的CSV使用 `smiles` 列，可附 `id` 列；格式见 [examples/polymers.csv](examples/polymers.csv)。
+成功结果含 `success=true` 和 `predicted_kappa_W_mK`，单位W/(m K)。
+合法结构能计算出预测，不代表对所有新材料都准确。
+
+### 数据和权重实际在哪里
+
+| 需要什么 | 已公开文件 | 用途 |
+|---|---|---|
+| 五张主表的逐条参考值与预测 | [reproduce/data/saved_predictions.csv.gz](reproduce/data/saved_predictions.csv.gz) | 117组、40,848行评价记录，供五表复算；包含跨模型/种子的重复记录 |
+| 主要模型训练和评价输入 | [reproduce/inputs/records.csv.gz](reproduce/inputs/records.csv.gz) | 14,112条不同记录，含SMILES、来源UUID、结构簇和热导率 |
+| 固定划分及样本顺序 | [reproduce/inputs/splits.json](reproduce/inputs/splits.json) | 表3–5各随机种子的拟合/评价记录ID，训练顺序不可重排 |
+| 数据字段与解压方法 | [reproduce/inputs/README.md](reproduce/inputs/README.md) | 数据字典、Python读取示例和来源说明 |
+| 模型参数 | [polymer_dmpnn/paper_weights/](polymer_dmpnn/paper_weights/) | 65份图模型checkpoint，模型身份及SHA在manifest中 |
+| 数据许可和出处 | [THIRD_PARTY_DATA.md](THIRD_PARTY_DATA.md) | 固定数据源、许可及整理修改说明 |
+
+`.csv.gz` 是压缩CSV，GitHub网页不会像普通文本一样展开。**下载整个仓库时会一起下载**；
+复现程序自动读取压缩文件，不需要手工解压。公开内容为复现所需整理子集，并非完整原始数据库。
+
+### 权重重测和固定配方重训
+
+安装模型包后，运行下面命令可重测65份已保存权重，与原保存预测核对：
+
+```bash
+python reproduce/evaluate_checkpoints.py --output checkpoint-verification
+```
+
+若要真正重新训练，请按 [详细复现教程](reproduce/README.md#train-from-fixed-curated-inputs)
+使用显式 `--run` 命令。当前提供表3–5主要模型的固定输入训练；
+表1/2提供保存预测的指标复算。完整历史原始清洗、聚类/角色生成以及旧GIN/GPR训练不在此全链复现范围内。
+
+## English documentation
+
 CPU inference, saved-result reproduction of **manuscript Tables 1–5**, and
 fixed-input training for the main graph experiments. Targets are simulated
 thermal conductivity of nominally unstrained amorphous polymers near **300 K,
