@@ -17,7 +17,9 @@ from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib import metadata, resources
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, parse_qs
+
+from .retest_jobs import RetestJobs
 
 MAX_ROWS = 1000
 MAX_BODY = 2 * 1024 * 1024
@@ -220,6 +222,11 @@ class LocalServer(ThreadingHTTPServer):
     daemon_threads = True
     allow_reuse_address = True
 
+    def server_close(self):
+        if hasattr(self, 'retests'):
+            self.retests.close()
+        super().server_close()
+
 
 def make_server(port=0, repository=None):
     directory = find_reproduction_root(repository)
@@ -256,7 +263,16 @@ def make_server(port=0, repository=None):
             if route == '/':
                 return self.reply(200, index, 'text/html; charset=utf-8')
             if route == '/api/info':
-                return self.reply(200, {'models': model_options(), 'reproduction_available': directory is not None, 'max_rows': MAX_ROWS})
+                return self.reply(200, {'models': model_options(), 'reproduction_available': directory is not None,
+                                       'retest_available': self.server.retests.available, 'max_rows': MAX_ROWS})
+            if route in ('/api/retest/status', '/api/retest/download'):
+                try:
+                    run_id = parse_qs(urlsplit(self.path).query).get('run_id', [None])[0]
+                    if route.endswith('/download'):
+                        return self.reply(200, self.server.retests.archive(run_id), 'application/zip')
+                    return self.reply(200, self.server.retests.status(run_id))
+                except ValueError as exc:
+                    return self.reply(400, {'error': str(exc)})
             if route == '/api/example.csv':
                 return self.reply(200, b'id,smiles\npolyethylene,*CC*\npolypropylene,*CC(*)C\npolystyrene,*CC(*)c1ccccc1\n', 'text/csv; charset=utf-8')
             self.reply(404, {'error': '未找到该页面。'})
@@ -280,6 +296,10 @@ def make_server(port=0, repository=None):
                     return self.reply(200, {'columns': fields, 'rows': len(rows), 'smiles_column': suggested})
                 if route == '/api/reproduce':
                     return self.reply(200, replay_tables(directory))
+                if route == '/api/retest/start':
+                    return self.reply(202, self.server.retests.start())
+                if route == '/api/retest/cancel':
+                    return self.reply(200, self.server.retests.cancel(payload.get('run_id')))
                 self.reply(404, {'error': '未找到该操作。'})
             except (ValueError, UnicodeError, csv.Error) as exc:
                 self.reply(400, {'error': str(exc)})
@@ -288,7 +308,9 @@ def make_server(port=0, repository=None):
             except Exception as exc:
                 print(f'Local UI error: {type(exc).__name__}: {exc}', file=sys.stderr, flush=True)
                 self.reply(500, {'error': '运行未完成。请检查安装包、权重与输入，或将终端信息反馈给维护者。'})
-    return LocalServer(('127.0.0.1', port), Handler)
+    server = LocalServer(('127.0.0.1', port), Handler)
+    server.retests = RetestJobs(directory)
+    return server
 
 
 def main(argv=None):

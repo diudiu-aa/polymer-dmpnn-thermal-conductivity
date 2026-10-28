@@ -142,3 +142,21 @@ python reproduce/recompute_metrics.py --run-dir /path/to/run-output --verify-exi
 
 It requires the `reproduce` optional dependencies. For Tables 1–5 from the
 repository's bundled data, use `paper_tables.py` instead.
+
+
+## Fresh inference and metric/ranking comparison in one run
+
+```bash
+python reproduce/retest_models.py --output fresh-model-retest
+```
+
+Runs the 15 fixed Table-5 open/periodic/multitask checkpoints. New prediction CSVs
+and their receipt are written **before** loading stored predictions for comparison.
+The result includes per-group metrics/rank differences, 34 covered displayed
+statistics, candidate_rankings.csv, metric_comparison.csv, environment/input/weight
+identities and result.json. All 6,000 outputs are checked; the browser scatter
+uses fixed-index sampling only. --models selects a subset of these 15 IDs, e.g.
+for a short run; it does not change weights, thresholds or splits. --reference-data
+can point to a copy of the frozen public reference package; integrity checks still
+apply. No fitting occurs. The local browser uses the same runner asynchronously
+and allows stopping; it does not automatically start this computation on tab open.

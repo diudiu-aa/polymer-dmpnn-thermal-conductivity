@@ -1,0 +1,32 @@
+{
+  "scope": "Local pre-publication browser retest of the frozen Table-5 core, not retraining or new external validation",
+  "run_id": "3ec929c2a6ce47eb9db5d9db230fa2a8",
+  "elapsed_seconds": 7.729924333019881,
+  "summary": {
+    "groups_tested": 15,
+    "predictions_tested": 6000,
+    "forward_batches": 375,
+    "prediction_atol": 1e-05,
+    "max_abs_prediction_difference": 0.0,
+    "max_abs_logit_difference": 0.0,
+    "prediction_tolerance_pass": true,
+    "identical_top100_groups": 15,
+    "identical_full_ranking_groups": 15,
+    "display_statistics_checked": 34,
+    "display_mismatches": 0
+  },
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.14.1",
+    "numpy": "2.5.4",
+    "rdkit": "2026.03.3",
+    "device": "CPU",
+    "threads": 1
+  },
+  "input_manifest_sha256": "9a171f838e16cf2f6df59bec984a1a857109822bc016281d63a16323528e8482",
+  "weight_manifest_sha256": "fecfc85340ed3bc716add06db77a5d00b717cb2f802f753704a6b864e368f42c",
+  "runner_sha256": "1bcd2ef2bea1d789836f6e7a158cd2d48a6520f55d9d248aca10ad3fca41103b",
+  "old_predictions_loaded_after_new_outputs": true,
+  "local_tests_passed": 27,
+  "test_without_old_prediction_data": "400 new predictions and receipt produced; comparison correctly failed"
+}

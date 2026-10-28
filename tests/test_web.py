@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import tempfile
 import threading
+import time
 import unittest
 import urllib.error
 import urllib.request
@@ -129,6 +130,54 @@ class LocalWebTests(unittest.TestCase):
                 self.assertIn(f'table_{n}.csv', z.namelist())
             self.assertIn('verification.json', z.namelist())
 
+    def test_cancel_retest_stops_the_computing_process(self):
+        code, raw, _ = self.request('/api/retest/start', {})
+        run_id = json.loads(raw)['run_id']
+        self.assertEqual(code, 202)
+        code, raw, _ = self.request('/api/retest/cancel', {'run_id': run_id})
+        self.assertEqual(code, 200)
+        self.assertEqual(json.loads(raw)['state'], 'cancelled')
+        self.assertIsNotNone(self.server.retests.job['process'].poll())
+        code, raw, _ = self.request('/api/retest/status?run_id=' + run_id)
+        self.assertEqual(json.loads(raw)['state'], 'cancelled')
+
+    def test_fresh_retest_actually_runs_models_and_downloads_new_predictions(self):
+        code, raw, _ = self.request('/api/retest/start', {})
+        self.assertEqual(code, 202, raw)
+        started = json.loads(raw)
+        run_id = started['run_id']
+        code, raw, _ = self.request('/api/retest/start', {})
+        self.assertEqual(json.loads(raw)['run_id'], run_id)
+        deadline = time.monotonic() + 180
+        while time.monotonic() < deadline:
+            code, raw, _ = self.request('/api/retest/status?run_id=' + run_id)
+            status = json.loads(raw)
+            if status['state'] != 'running':
+                break
+            time.sleep(.1)
+        self.assertEqual(status['state'], 'completed', status)
+        result = status['result']
+        self.assertEqual(result['summary']['groups_tested'], 15)
+        self.assertEqual(result['summary']['predictions_tested'], 6000)
+        self.assertEqual(result['summary']['forward_batches'], 375)
+        self.assertTrue(result['summary']['prediction_tolerance_pass'])
+        self.assertEqual(result['summary']['display_statistics_checked'], 34)
+        self.assertEqual(len(result['receipt']['models']), 15)
+        self.assertIn('before stored predictions were loaded', result['receipt']['phase'])
+        code, archive, _ = self.request('/api/retest/download?run_id=' + run_id)
+        self.assertEqual(code, 200)
+        with zipfile.ZipFile(io.BytesIO(archive)) as z:
+            self.assertIn('fresh_prediction_receipt.json', z.namelist())
+            self.assertIn('candidate_rankings.csv', z.namelist())
+            self.assertIn('metric_comparison.csv', z.namelist())
+            self.assertEqual(json.loads(z.read('web_run.json'))['run_id'], run_id)
+            for spec in result['receipt']['models']:
+                rows = list(csv.DictReader(io.StringIO(z.read(spec['file']).decode())))
+                self.assertEqual(len(rows), 400)
+                self.assertTrue(all(float(row['prediction']) > 0 for row in rows))
+        code, _, _ = self.request('/api/retest/status?run_id=not-current')
+        self.assertEqual(code, 400)
+
     def test_wheel_without_repository_data_still_has_prediction_ui(self):
         with tempfile.TemporaryDirectory() as temp:
             other = make_server(0, temp)
@@ -139,6 +188,7 @@ class LocalWebTests(unittest.TestCase):
                 with urllib.request.urlopen(url + '/api/info', timeout=30) as r:
                     info = json.load(r)
                 self.assertFalse(info['reproduction_available'])
+                self.assertFalse(info['retest_available'])
                 self.assertEqual(len(info['models']), 65)
             finally:
                 other.shutdown(); other.server_close(); thread.join(timeout=3)
