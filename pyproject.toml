@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "polymer-dmpnn-kappa"
-version = "0.3.1"
+version = "0.4.0"
 description = "Periodic D-MPNN inference for amorphous polymer thermal conductivity"
 requires-python = ">=3.10,<3.14"
 dependencies = ["numpy>=1.26,<3", "rdkit>=2024.3,<2027", "torch>=2.6,<3"]

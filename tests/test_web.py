@@ -1,5 +1,6 @@
 """Exercise the local browser API with real published weights and public data."""
 import base64
+import csv
 import io
 import json
 from pathlib import Path
@@ -113,6 +114,16 @@ class LocalWebTests(unittest.TestCase):
         self.assertEqual(code, 200, r)
         self.assertEqual(r['verification']['verification']['display_statistics_checked'], 182)
         self.assertEqual(r['verification']['verification']['display_mismatches'], 0)
+        self.assertEqual(len(r['table_data']), 5)
+        for name, contents in r['tables'].items():
+            parsed = list(csv.reader(io.StringIO(contents)))
+            self.assertEqual(r['table_data'][name]['columns'], parsed[0])
+            self.assertEqual(r['table_data'][name]['rows'], parsed[1:])
+        # The plotted second-split tail result must remain its actual CSV value.
+        t5 = r['table_data']['table_5.csv']
+        tail_column = t5['columns'].index('Tail MAE (W m⁻¹ K⁻¹)')
+        multitask = next(row for row in t5['rows'] if row[0] == 'Periodic + multitask, regression ranking')
+        self.assertEqual(multitask[tail_column], '0.04902 ± 0.00700')
         with zipfile.ZipFile(io.BytesIO(base64.b64decode(r['zip_base64']))) as z:
             for n in range(1, 6):
                 self.assertIn(f'table_{n}.csv', z.namelist())

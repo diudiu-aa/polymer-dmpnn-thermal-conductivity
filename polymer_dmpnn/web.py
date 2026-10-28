@@ -207,8 +207,13 @@ def replay_tables(directory):
         with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
             for f in sorted(output.iterdir()):
                 z.write(f, f.name)
+        tables = {f'table_{n}.csv': (output / f'table_{n}.csv').read_text() for n in range(1, 6)}
+        table_data = {}
+        for name, contents in tables.items():
+            records = list(csv.reader(io.StringIO(contents)))
+            table_data[name] = {'columns': records[0], 'rows': records[1:]}
         return {'verification': verification, 'zip_base64': base64.b64encode(archive.getvalue()).decode(),
-                'tables': {f'table_{n}.csv': (output / f'table_{n}.csv').read_text() for n in range(1, 6)}}
+                'tables': tables, 'table_data': table_data}
 
 
 class LocalServer(ThreadingHTTPServer):

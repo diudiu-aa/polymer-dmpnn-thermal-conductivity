@@ -8,13 +8,17 @@
 
 1. 下载并解压完整仓库，先安装 **Python 3.10–3.13（建议3.12）**。
 2. 在仓库文件夹打开终端，运行 `python start_ui.py`（macOS通常为 `python3 start_ui.py`）。首次会自动创建专用环境并联网安装依赖，完成后打开浏览器。
-3. 先点“一键体验：聚乙烯”直接看预测；或切换“批量CSV”，上传文件、选择结构列并下载结果。也可直接点击“核对论文五张表”核对论文表1–5。
+3. 先点“一键体验：聚乙烯”直接看预测；或切换“批量CSV”，上传文件、选择结构列并下载结果。点击上方“快速复现论文结果”，自动重算五张主表并显示可切换的模型比较图、学习曲线及数值表。
 
 提供双击启动入口：[Windows](start_ui_windows.bat)、[macOS](start_ui_macos.command)、[Linux](start_ui_linux.sh)。
 如果系统不能直接执行入口，请使用上面的Python命令；不要关闭系统安全保护。
 首次安装可能需要数分钟及数百MB以上磁盘空间。后续复用仓库内`.ui-venv`，终端需保持运行，关闭时按Ctrl+C。
 这是运行在**你自己电脑**的界面，GitHub网页本身不执行模型；输入不会发到云端，不需要API密钥。
 [完整界面教程、输入要求与常见问题](docs/USER_GUIDE_zh-CN.md)。
+
+点击“快速复现论文结果”即可查看以下交互图表，无须上传数据：
+
+![论文结果可视化复算](docs/reproduction.png)
 
 ## 第一次使用 从这里开始
 
@@ -115,7 +119,8 @@ and `start_ui_linux.sh`. If double-clicking is unavailable, use the Python comma
 The Chinese-language UI supports single SMILES with 2D depiction, CSV upload or
 paste, column selection, all 65 individual models plus the legacy ensemble,
 optional reference-label MAE/RMSE/R², CSV/JSON downloads, and verified five-table
-replay with a downloadable ZIP. The default is one Table 5 periodic seed, unlike
+replay with an interactive dashboard: model/error-bar comparisons, label-budget
+learning curves, five numeric tables, SVG/CSV exports and a full result ZIP. The default is one Table 5 periodic seed, unlike
 the backwards-compatible CLI default ensemble. No fitting is started by this UI.
 Predictions and replay run locally on loopback; no API key or cloud upload is used.
 First installation needs internet and disk space for PyTorch and other packages.
