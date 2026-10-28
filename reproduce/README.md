@@ -181,3 +181,19 @@ score. It writes optimizer steps, initial/final tensor hashes, curves, new weigh
 new predictions and comparison outputs. Use the browser for live progress/cancel.
 The legacy train_graph_models.py without --training-seed retains exact original
 randomness; supplying that new flag leaves --seed as the data-partition selector.
+
+
+## Generate the paper core results with the original settings
+
+```bash
+python reproduce/train_from_scratch.py --paper-settings --output paper-main-results
+```
+
+Uses the original five split seeds and training seeds 32101..32105, the original
+50-epoch recipe, and no released checkpoint loads. Generates paper_main_results.csv
+from the new predictions and paper_consistency.json for the 34 covered Table-5
+display statistics. Covers open/periodic/multitask and classifier ranking only.
+Exit 0 means the covered displayed statistics match; exit 2 retains genuine
+outputs with display differences. Per-record prediction tolerance is reported
+separately and is not substituted for display-level agreement. This is the
+default browser mode; new random-start experiments remain optional.

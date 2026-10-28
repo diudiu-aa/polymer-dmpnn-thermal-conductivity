@@ -4,6 +4,7 @@ import io
 import json
 from pathlib import Path
 import shutil
+import os
 import subprocess
 import sys
 import tempfile
@@ -62,5 +63,41 @@ class FreshTrainingTests(unittest.TestCase):
                     self.assertNotIn('±',metric['new_display'])
             # No old weights were present; the three new checkpoints are outside source.
             self.assertFalse(list(source.rglob('*.pt')))
+
+    def test_original_paper_settings_generate_main_results_without_pretrained_weights(self):
+        root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as temp:
+            source, output = Path(temp)/'source', Path(temp)/'paper-run'
+            shutil.copytree(root/'reproduce', source/'reproduce', ignore=shutil.ignore_patterns('__pycache__'))
+            (source/'polymer_dmpnn').mkdir()
+            for file in (root/'polymer_dmpnn').glob('*.py'):
+                shutil.copy2(file, source/'polymer_dmpnn'/file.name)
+            (source/'polymer_dmpnn/paper_weights').mkdir()
+            shutil.copy2(root/'polymer_dmpnn/paper_weights/manifest.json',source/'polymer_dmpnn/paper_weights/manifest.json')
+            self.assertFalse(list(source.rglob('*.pt')))
+            proc = subprocess.run([sys.executable,'-I',str(source/'reproduce/train_from_scratch.py'),
+                '--paper-settings','--output',str(output)],cwd=temp,capture_output=True,text=True,timeout=1500)
+            self.assertIn(proc.returncode,(0,2),proc.stdout[-4000:]+proc.stderr[-4000:])
+            result=json.loads((output/'result.json').read_text())
+            self.assertEqual(result['configuration']['training_seeds'],list(range(32101,32106)))
+            self.assertEqual(result['configuration']['split_seeds'],list(range(32101,32106)))
+            self.assertEqual(result['summary']['optimizer_steps'],28500)
+            self.assertEqual(result['summary']['models_trained'],15)
+            self.assertFalse(result['receipt']['pretrained_weights_loaded'])
+            check=result['paper_check']
+            self.assertEqual(check['display_statistics_checked'],34)
+            self.assertEqual(check['matches'],check['display_mismatches']==0)
+            self.assertEqual(proc.returncode,0 if check['matches'] else 2)
+            table=list(csv.reader(io.StringIO(result['paper_main_results_csv'])))
+            self.assertEqual(len(table),5)
+            self.assertEqual(table[0][0],'Model')
+            self.assertEqual((output/'paper_main_results.csv').read_text(encoding='utf-8'),result['paper_main_results_csv'])
+            self.assertEqual(len(list(output.rglob('weights.pt'))),15)
+            # Preserve the actual display-level comparison on CI, even if a platform differs.
+            if os.environ.get('GITHUB_ACTIONS')=='true':
+                evidence=root/'ci-training-results';evidence.mkdir(exist_ok=True)
+                for name in ('paper_consistency.json','paper_main_results.csv','run_configuration.json'):
+                    shutil.copy2(output/name,evidence/name)
+            print('PAPER_ORIGINAL_SETTINGS_CHECK '+json.dumps(check),flush=True)
 
 if __name__=='__main__':unittest.main()

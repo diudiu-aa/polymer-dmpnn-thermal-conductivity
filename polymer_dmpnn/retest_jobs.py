@@ -57,10 +57,10 @@ class RetestJobs:
                 return {'run_id': self.job['id'], 'state': 'running', 'already_running': True}
             extra = []
             if self.runner == 'train_from_scratch.py':
-                mode = (options or {}).get('mode', 'quick')
-                if mode not in ('quick', 'full'):
-                    raise ValueError('请选择配对试跑或完整5组重复。')
-                extra = ['--repeats', '1' if mode == 'quick' else '5']
+                mode = (options or {}).get('mode', 'paper')
+                if mode not in ('paper', 'quick', 'full'):
+                    raise ValueError('请选择论文原设置或随机试跑。')
+                extra = ['--paper-settings'] if mode == 'paper' else ['--repeats', '1' if mode == 'quick' else '5']
             # Keep just the latest run; the user can download it before restarting.
             if self.temp is not None:
                 self.temp.cleanup()

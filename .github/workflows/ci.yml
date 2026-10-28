@@ -26,5 +26,6 @@ jobs:
         with:
           name: reproduction-python-${{ matrix.python-version }}
           path: |
+            ci-training-results/
             reproduced-paper-tables/
             checkpoint-verification/verification.json

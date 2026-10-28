@@ -57,16 +57,22 @@ def main(argv=None):
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--repeats', type=int, choices=(1, 5), default=1)
     p.add_argument('--training-seed', type=int, help='Record/reuse a specific new training start; default draws a fresh one')
+    p.add_argument('--paper-settings', action='store_true', help='Use all five original training seeds and generate the paper main-results table')
     args = p.parse_args(argv)
+    if args.paper_settings:
+        if args.training_seed is not None:
+            p.error('--paper-settings uses the original seeds; do not supply --training-seed')
+        args.repeats = 5
     if args.training_seed is not None and not 0 <= args.training_seed < 2**31 - 100000:
         p.error('Invalid training seed')
     args.output.mkdir(parents=True, exist_ok=False)
-    base_seed = args.training_seed if args.training_seed is not None else secrets.randbelow(2**31 - 200000) + 100000
+    base_seed = (32101 if args.paper_settings else args.training_seed if args.training_seed is not None
+                 else secrets.randbelow(2**31 - 200000) + 100000)
     started, started_at = time.monotonic(), datetime.now(timezone.utc).isoformat()
     state = {'state': 'running', 'phase': 'loading', 'started_at': started_at,
              'models_total': args.repeats * len(ARMS), 'models_completed': 0,
              'epochs_total': 50, 'epoch': 0, 'optimizer_steps_total': 0,
-             'training_start': base_seed, 'curves': {}, 'predictions_completed': 0}
+             'training_start': base_seed, 'paper_settings': args.paper_settings, 'curves': {}, 'predictions_completed': 0}
     def progress(**updates):
         state.update(updates);state['elapsed_seconds'] = time.monotonic() - started
         atomic_json(args.output / 'progress.json', state)
@@ -85,8 +91,9 @@ def main(argv=None):
             raise ValueError('Fixed inputs differ from the published source')
         records, splits, manifest = load_inputs()
         split_seeds = list(range(32101, 32101 + args.repeats))
-        training_seeds = [base_seed + 100 * i for i in range(args.repeats)]
-        plan = {'mode': 'fresh random-initialization training; fixed published splits',
+        training_seeds = split_seeds if args.paper_settings else [base_seed + 100 * i for i in range(args.repeats)]
+        plan = {'mode': 'paper original-settings training' if args.paper_settings else 'fresh random-initialization training; fixed published splits',
+                'paper_settings': args.paper_settings,
                 'split_seeds': split_seeds, 'training_seeds': training_seeds, 'arms': ARMS,
                 'epochs': 50, 'fit_labels': 600, 'evaluation_records': 400,
                 'pretrained_weights_loaded': False,
@@ -144,10 +151,10 @@ def main(argv=None):
         compared = compare_predictions(args.output, receipt, ROOT / 'reproduce/data', progress)
         for group in compared['per_group']:
             group['matches_original_fixed_weight_predictions'] = group.pop('prediction_tolerance_pass')
-            group['fixed_weight_match_expected'] = False
+            group['fixed_weight_match_expected'] = args.paper_settings
         aggregates = summarize_trials(compared['per_group'])
         # Variation from a newly trained model is an output, never a failure criterion.
-        result = {'mode': 'from-scratch training with new recorded randomness', 'started_at': started_at,
+        result = {'mode': 'paper original-settings training' if args.paper_settings else 'from-scratch training with new recorded randomness', 'started_at': started_at,
                   'completed_at': datetime.now(timezone.utc).isoformat(), 'elapsed_seconds': time.monotonic()-started,
                   'configuration': plan, 'receipt': receipt, 'curves': state['curves'],
                   'aggregates': aggregates, 'per_group': compared['per_group'], 'scatter': compared['scatter'],
@@ -157,8 +164,29 @@ def main(argv=None):
                               'max_abs_prediction_difference': compared['summary']['max_abs_prediction_difference'],
                               'same_top100_groups': compared['summary']['identical_top100_groups'],
                               'training_starts': training_seeds, 'split_seeds': split_seeds,
+                              'paper_settings': args.paper_settings,
                               'all_weights_updated': all(r['initial_state_sha256'] != r['final_state_sha256'] for r in training_receipts)},
                   'scope': 'New randomness on fixed public Table-5 splits, not new independent material validation. One repeat compares matched split-level results, not the paper five-repeat mean.'}
+        if args.paper_settings:
+            check = compared['summary']
+            result['paper_check'] = {'display_statistics_checked': check['display_statistics_checked'],
+                                    'display_mismatches': check['display_mismatches'],
+                                    'prediction_tolerance_pass': check['prediction_tolerance_pass'],
+                                    'max_abs_prediction_difference': check['max_abs_prediction_difference'],
+                                    'max_abs_logit_difference': check['max_abs_logit_difference'],
+                                    'matches': check['display_mismatches'] == 0,
+                                    'scope': 'Table-5 open/periodic/multitask and classifier ranking only; 34 displayed statistics.'}
+            columns = ['Model','MAE (W m⁻¹ K⁻¹)','R²','Tail MAE (W m⁻¹ K⁻¹)','Precision@10','Precision@100']
+            keys = ['mae','r2','tail_mae','precision_at_10','precision_at_100']
+            with (args.output / 'paper_main_results.csv').open('w', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f);writer.writerow(columns)
+                for row in compared['aggregates']:
+                    cells = {m['metric'].removeprefix('class_'): m['new_display'] for m in row['metrics']}
+                    writer.writerow([row['model']] + [cells.get(key,'—') for key in keys])
+            result['paper_main_results_csv'] = (args.output / 'paper_main_results.csv').read_text(encoding='utf-8')
+            atomic_json(args.output / 'paper_consistency.json', result['paper_check'])
+            print(json.dumps({'event': 'paper_consistency', **result['paper_check']}), flush=True)
+            result['scope'] = 'From-scratch reproduction of the original Table-5 core settings; not the entire historical study or new independent validation.'
         with (args.output / 'metric_comparison.csv').open('w', newline='') as f:
             fields = ['model','metric','n_repeats','paper_mean','paper_sd','new_mean','new_sd','mean_difference']
             writer = csv.DictWriter(f, fieldnames=fields, extrasaction='ignore');writer.writeheader()
@@ -167,7 +195,7 @@ def main(argv=None):
                     writer.writerow({'model': row['model'], **metric})
         atomic_json(args.output / 'result.json', result)
         progress(state='completed', phase='completed')
-        return 0
+        return 0 if not args.paper_settings or result['paper_check']['matches'] else 2
     except Exception as exc:
         state.update(state='failed', phase='failed', error=f'{type(exc).__name__}: {exc}', elapsed_seconds=time.monotonic()-started)
         atomic_json(args.output / 'progress.json', state)

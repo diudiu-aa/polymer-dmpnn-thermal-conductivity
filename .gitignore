@@ -8,3 +8,5 @@ dist/
 predictions.csv
 
 .ui-venv/
+
+ci-training-results/

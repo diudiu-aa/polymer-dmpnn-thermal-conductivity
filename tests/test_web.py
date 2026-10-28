@@ -45,7 +45,7 @@ class LocalWebTests(unittest.TestCase):
     def test_home_and_model_catalog(self):
         code, raw, headers = self.request('/')
         self.assertEqual(code, 200)
-        self.assertIn('从头训练并测试模型', raw.decode())
+        self.assertIn('运行论文主结果', raw.decode())
         self.assertIn("frame-ancestors 'none'", headers['Content-Security-Policy'])
         code, raw, _ = self.request('/api/info')
         info = json.loads(raw)
