@@ -45,7 +45,7 @@ class LocalWebTests(unittest.TestCase):
     def test_home_and_model_catalog(self):
         code, raw, headers = self.request('/')
         self.assertEqual(code, 200)
-        self.assertIn('从重复单元，预测聚合物热导率', raw.decode())
+        self.assertIn('从头训练并测试模型', raw.decode())
         self.assertIn("frame-ancestors 'none'", headers['Content-Security-Policy'])
         code, raw, _ = self.request('/api/info')
         info = json.loads(raw)
@@ -141,6 +141,25 @@ class LocalWebTests(unittest.TestCase):
         code, raw, _ = self.request('/api/retest/status?run_id=' + run_id)
         self.assertEqual(json.loads(raw)['state'], 'cancelled')
 
+    def test_training_start_stop_and_compute_jobs_are_mutually_exclusive(self):
+        code, raw, _ = self.request('/api/training/start', {'mode': 'unknown'})
+        self.assertEqual(code, 400)
+        code, raw, _ = self.request('/api/training/start', {'mode': 'quick'})
+        self.assertEqual(code, 202, raw)
+        run_id = json.loads(raw)['run_id']
+        code, raw, _ = self.request('/api/retest/start', {})
+        self.assertEqual(code, 400)
+        code, raw, _ = self.request('/api/training/status?run_id=' + run_id)
+        self.assertEqual(json.loads(raw)['state'], 'running')
+        code, raw, _ = self.request('/api/training/cancel', {'run_id': run_id})
+        self.assertEqual(code, 200)
+        self.assertEqual(json.loads(raw)['state'], 'cancelled')
+        self.assertIsNotNone(self.server.training.job['process'].poll())
+        code, raw, _ = self.request('/api/training/download?run_id=' + run_id)
+        self.assertEqual(code, 200)
+        with zipfile.ZipFile(io.BytesIO(raw)) as z:
+            self.assertIn('run.log', z.namelist())
+
     def test_fresh_retest_actually_runs_models_and_downloads_new_predictions(self):
         code, raw, _ = self.request('/api/retest/start', {})
         self.assertEqual(code, 202, raw)
@@ -189,6 +208,7 @@ class LocalWebTests(unittest.TestCase):
                     info = json.load(r)
                 self.assertFalse(info['reproduction_available'])
                 self.assertFalse(info['retest_available'])
+                self.assertFalse(info['training_available'])
                 self.assertEqual(len(info['models']), 65)
             finally:
                 other.shutdown(); other.server_close(); thread.join(timeout=3)

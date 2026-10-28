@@ -1,0 +1,74 @@
+{
+  "scope": "Local from-scratch paired trial on one fixed published split, not a new independent validation",
+  "mode": "quick",
+  "run_id": "2806798cfbea43f08ae736c7fc275b7f",
+  "elapsed_seconds": 54.925828665989684,
+  "summary": {
+    "models_trained": 3,
+    "repeats": 1,
+    "predictions_tested": 1200,
+    "optimizer_steps": 5700,
+    "max_abs_prediction_difference": 0.08625981211662292,
+    "same_top100_groups": 0,
+    "training_starts": [
+      467091989
+    ],
+    "split_seeds": [
+      32101
+    ],
+    "all_weights_updated": true
+  },
+  "pretrained_weights_loaded": false,
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.14.1",
+    "numpy": "2.5.4",
+    "rdkit": "2026.03.3",
+    "device": "CPU",
+    "threads": 1
+  },
+  "mae_comparisons": [
+    {
+      "model": "Open D-MPNN",
+      "metric": "mae",
+      "percent": false,
+      "paper_mean": 0.022862092976272525,
+      "paper_sd": null,
+      "new_mean": 0.02352678732751824,
+      "new_sd": null,
+      "mean_difference": 0.0006646943512457135,
+      "n_repeats": 1,
+      "paper_display": "0.02286",
+      "new_display": "0.02353"
+    },
+    {
+      "model": "Periodic D-MPNN",
+      "metric": "mae",
+      "percent": false,
+      "paper_mean": 0.02241008998163926,
+      "paper_sd": null,
+      "new_mean": 0.02356694298938873,
+      "new_sd": null,
+      "mean_difference": 0.0011568530077494706,
+      "n_repeats": 1,
+      "paper_display": "0.02241",
+      "new_display": "0.02357"
+    },
+    {
+      "model": "Periodic + multitask, regression ranking",
+      "metric": "mae",
+      "percent": false,
+      "paper_mean": 0.023561502853285163,
+      "paper_sd": null,
+      "new_mean": 0.023789888375012818,
+      "new_sd": null,
+      "mean_difference": 0.00022838552172765522,
+      "n_repeats": 1,
+      "paper_display": "0.02356",
+      "new_display": "0.02379"
+    }
+  ],
+  "local_tests_passed": 29,
+  "test_without_published_weights": "three fresh models trained without any input .pt file; new weights independently reproduced their evaluation predictions",
+  "legacy_recipe_parity": "one original-seed 50-epoch fit retained identical tensors and all 400 predictions"
+}

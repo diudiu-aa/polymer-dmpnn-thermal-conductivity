@@ -225,6 +225,8 @@ class LocalServer(ThreadingHTTPServer):
     def server_close(self):
         if hasattr(self, 'retests'):
             self.retests.close()
+        if hasattr(self, 'training'):
+            self.training.close()
         super().server_close()
 
 
@@ -264,13 +266,15 @@ def make_server(port=0, repository=None):
                 return self.reply(200, index, 'text/html; charset=utf-8')
             if route == '/api/info':
                 return self.reply(200, {'models': model_options(), 'reproduction_available': directory is not None,
-                                       'retest_available': self.server.retests.available, 'max_rows': MAX_ROWS})
-            if route in ('/api/retest/status', '/api/retest/download'):
+                                       'retest_available': self.server.retests.available,
+                                       'training_available': self.server.training.available, 'max_rows': MAX_ROWS})
+            if route in ('/api/retest/status', '/api/retest/download', '/api/training/status', '/api/training/download'):
                 try:
+                    jobs = self.server.training if route.startswith('/api/training/') else self.server.retests
                     run_id = parse_qs(urlsplit(self.path).query).get('run_id', [None])[0]
                     if route.endswith('/download'):
-                        return self.reply(200, self.server.retests.archive(run_id), 'application/zip')
-                    return self.reply(200, self.server.retests.status(run_id))
+                        return self.reply(200, jobs.archive(run_id), 'application/zip')
+                    return self.reply(200, jobs.status(run_id))
                 except ValueError as exc:
                     return self.reply(400, {'error': str(exc)})
             if route == '/api/example.csv':
@@ -297,9 +301,19 @@ def make_server(port=0, repository=None):
                 if route == '/api/reproduce':
                     return self.reply(200, replay_tables(directory))
                 if route == '/api/retest/start':
-                    return self.reply(202, self.server.retests.start())
+                    with self.server.compute_lock:
+                        if self.server.training.status()['state'] == 'running':
+                            raise ValueError('从头训练正在运行，请完成或停止后再重测旧模型。')
+                        return self.reply(202, self.server.retests.start())
                 if route == '/api/retest/cancel':
                     return self.reply(200, self.server.retests.cancel(payload.get('run_id')))
+                if route == '/api/training/start':
+                    with self.server.compute_lock:
+                        if self.server.retests.status()['state'] == 'running':
+                            raise ValueError('模型重测正在运行，请完成或停止后再训练。')
+                        return self.reply(202, self.server.training.start(payload))
+                if route == '/api/training/cancel':
+                    return self.reply(200, self.server.training.cancel(payload.get('run_id')))
                 self.reply(404, {'error': '未找到该操作。'})
             except (ValueError, UnicodeError, csv.Error) as exc:
                 self.reply(400, {'error': str(exc)})
@@ -310,6 +324,8 @@ def make_server(port=0, repository=None):
                 self.reply(500, {'error': '运行未完成。请检查安装包、权重与输入，或将终端信息反馈给维护者。'})
     server = LocalServer(('127.0.0.1', port), Handler)
     server.retests = RetestJobs(directory)
+    server.training = RetestJobs(directory, runner='train_from_scratch.py', timeout_seconds=1800)
+    server.compute_lock = threading.Lock()
     return server
 
 

@@ -14,10 +14,12 @@ import zipfile
 
 
 class RetestJobs:
-    def __init__(self, reproduction_directory):
+    def __init__(self, reproduction_directory, runner='retest_models.py', timeout_seconds=600):
         self.directory = reproduction_directory
+        self.runner = runner
+        self.timeout_seconds = timeout_seconds
         self.available = self.directory is not None and all(
-            (self.directory / p).is_file() for p in ('retest_models.py', 'inputs/splits.json', 'inputs/records.csv.gz'))
+            (self.directory / p).is_file() for p in (runner, 'inputs/splits.json', 'inputs/records.csv.gz'))
         self.temp = None
         self.job = None
         self.lock = threading.Lock()
@@ -27,7 +29,7 @@ class RetestJobs:
         if job is None:
             return
         process = job['process']
-        if process.poll() is None and time.monotonic() - job['clock'] > 600:
+        if process.poll() is None and time.monotonic() - job['clock'] > self.timeout_seconds:
             self._stop('timeout')
         code = process.poll()
         progress_file = job['output'] / 'progress.json'
@@ -46,13 +48,19 @@ class RetestJobs:
                 job['state'] = 'failed'
             job['returncode'] = code
 
-    def start(self):
+    def start(self, options=None):
         with self.lock:
             if not self.available:
                 raise ValueError('未找到真实重测所需文件。请下载完整GitHub仓库并从该目录启动。')
             self._refresh()
             if self.job is not None and self.job['process'].poll() is None:
                 return {'run_id': self.job['id'], 'state': 'running', 'already_running': True}
+            extra = []
+            if self.runner == 'train_from_scratch.py':
+                mode = (options or {}).get('mode', 'quick')
+                if mode not in ('quick', 'full'):
+                    raise ValueError('请选择配对试跑或完整5组重复。')
+                extra = ['--repeats', '1' if mode == 'quick' else '5']
             # Keep just the latest run; the user can download it before restarting.
             if self.temp is not None:
                 self.temp.cleanup()
@@ -62,8 +70,8 @@ class RetestJobs:
             output = root / ('run-' + run_id)
             log = (root / 'run.log').open('w')
             try:
-                process = subprocess.Popen([sys.executable, '-I', str(self.directory / 'retest_models.py'),
-                                            '--output', str(output)], cwd=self.directory.parent,
+                process = subprocess.Popen([sys.executable, '-I', str(self.directory / self.runner),
+                                            '--output', str(output), *extra], cwd=self.directory.parent,
                                            stdout=log, stderr=subprocess.STDOUT)
             except Exception:
                 log.close();self.temp.cleanup();self.temp=None
@@ -122,9 +130,9 @@ class RetestJobs:
                 z.writestr('web_run.json', json.dumps({'run_id': run_id, 'started_at': self.job['started_at'],
                     'state': self.job['state'], 'returncode': self.job.get('returncode')}, indent=2))
                 if self.job['output'].exists():
-                    for f in sorted(self.job['output'].iterdir()):
-                        if f.is_file() and f.suffix in ('.json', '.csv'):
-                            z.write(f, f.name)
+                    for f in sorted(self.job['output'].rglob('*')):
+                        if f.is_file() and f.suffix in ('.json', '.csv', '.pt'):
+                            z.write(f, str(f.relative_to(self.job['output'])))
             return buffer.getvalue()
 
     def close(self):

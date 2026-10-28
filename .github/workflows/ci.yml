@@ -1,4 +1,4 @@
-name: inference and paper reproduction
+name: training, inference and paper reproduction
 on: [push, pull_request]
 jobs:
   test:

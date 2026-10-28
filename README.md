@@ -2,37 +2,33 @@
 
 **中文快速开始在本页下方。** [完整中文教程](README_zh-CN.md) · [复现数据](reproduce/data/) · [训练输入与划分](reproduce/inputs/) · [65份论文模型权重](polymer_dmpnn/paper_weights/) · [示例CSV](examples/polymers.csv)
 
-## 图形界面：推荐第一次测试使用
+## 图形界面：下载后从头训练并测试
 
-![本地预测工作台实测界面](docs/interface.png)
+![实际从头训练与新成绩](docs/training.png)
 
-1. 下载并解压完整仓库，先安装 **Python 3.10–3.13（建议3.12）**。
-2. 在仓库文件夹打开终端，运行 `python start_ui.py`（macOS通常为 `python3 start_ui.py`）。首次会自动创建专用环境并联网安装依赖，完成后打开浏览器。
-3. 先点“一键体验：聚乙烯”直接看预测；或切换“批量CSV”，上传文件、选择结构列并下载结果。点击上方“重新测试论文模型”，实际生成新预测并对照原结果；“核对已保存数值”则重算全部五张主表。
-
-提供双击启动入口：[Windows](start_ui_windows.bat)、[macOS](start_ui_macos.command)、[Linux](start_ui_linux.sh)。
-如果系统不能直接执行入口，请使用上面的Python命令；不要关闭系统安全保护。
-首次安装可能需要数分钟及数百MB以上磁盘空间。后续复用仓库内`.ui-venv`，终端需保持运行，关闭时按Ctrl+C。
-这是运行在**你自己电脑**的界面，GitHub网页本身不执行模型；输入不会发到云端，不需要API密钥。
-[完整界面教程、输入要求与常见问题](docs/USER_GUIDE_zh-CN.md)。
-
-点击“核对已保存数值”可查看以下五表交互图表，无须上传数据：
-
-![论文结果可视化复算](docs/reproduction.png)
-
-### 真正再测试一次：推荐给复测人员
-
-![网页实际重新测试论文模型](docs/retest.png)
-
-网页新增 **“重新测试论文模型”**：点击开始后，使用开链、周期、双任务模型的15份已发布权重，
-对固定评价结构实际产生6000次新预测，再重算指标和候选排名，并对照原结果。
-界面显示真实进度、运行编号、预测一致性图、指标差值与可下载的新预测/排序/日志。
-本次覆盖表5三个主线模型的34个显示数值，区别于五表182个显示数值的保存预测复算。
-这不是重新训练或新外部验证。命令行同样可运行：
+先安装Python 3.10–3.13（建议3.12），下载并解压整个仓库，在目录内运行：
 
 ```bash
-python reproduce/retest_models.py --output fresh-model-retest
+python start_ui.py
+# macOS通常用 python3 start_ui.py
 ```
+
+首次自动安装依赖并打开本地网页，终端需保持运行。页面默认是 **“从头训练并测试”**：
+
+1. 选“配对试跑”：按固定数据划分，从随机初始化训练开链、周期、双任务三个新模型，各50轮。
+2. 或选“完整重复”：按论文原5组划分训练15个新模型，比较均值与波动，耗时更多。
+3. 点击“从头训练，再测试”，看真实轮次、优化步数和训练曲线；训练完成后查看新预测、MAE/R²、尾部误差、排名及与原同组结果的差值。
+
+每次默认生成并记录新的训练随机起点，不加载发布的.pt权重。原始标签、数据划分和超参数保持固定；
+结果可以比原研究好或差，不人为添加变化，也不自动挑选最好的一次。单组结果对照同一组原成绩，
+不能冒充论文的五次均值。新模型、预测、曲线、配置和日志可下载；停止后也保留已完成输出。
+
+“预测新材料”页用于调用已发布模型。菜单“其他核对”保留固定权重重测与五表保存结果复算，
+三种工作不混称。这里只覆盖表5三个主线模型的新训练；全篇历史实验、原MD生产和旧GIN/GPR训练不在此按钮范围。
+
+提供[Windows](start_ui_windows.bat)、[macOS](start_ui_macos.command)、[Linux](start_ui_linux.sh)启动入口。
+若双击不可用，请使用上面的Python命令，无须关闭系统安全保护。首次安装需网络和磁盘空间，后续复用.ui-venv。
+本地计算，不需API密钥。[完整中文教程](docs/USER_GUIDE_zh-CN.md)。
 
 ## 第一次使用 从这里开始
 
@@ -120,6 +116,31 @@ tables, per-seed metrics and `verification.json`. All inputs are included.
 No private project directory, account, network, or raw database is needed.
 The output directory must be new. Expected statistics verify the calculation;
 they are not copied as generated results.
+
+## Train new models from scratch in the browser
+
+The default page trains new paired open/periodic/multitask models for 50 epochs,
+without loading released checkpoints. A fresh recorded training seed controls
+initialization, data order and dropout; the original data splits, targets and
+hyperparameters stay fixed. A quick run trains three models on the first fixed
+600-fit/400-evaluation split; the full option trains 15 models over the original
+five splits. A quick run compares the matching original split-level results,
+not the paper's five-repeat mean. Results may improve or worsen; differences
+are reported rather than converted into an exact-match PASS.
+
+```bash
+python reproduce/train_from_scratch.py --repeats 1 --output new-training
+# Replay a recorded training start with the same fixed split(s):
+python reproduce/train_from_scratch.py --repeats 1 --training-seed 123456 --output replay-training
+```
+
+The browser shows real epoch/loss curves and optimizer steps, then computes
+metrics and rankings after fitting. The downloaded ZIP includes new weights,
+new predictions, curves, random starts, hashes and logs. One/latest temporary
+training run is retained; download before restarting or closing the service.
+The 30-minute run is cancellable. Training and checkpoint-retest jobs do not
+run concurrently. This is a reproducibility/variation run on existing public
+evaluation data, not new independent external validation or full-paper retraining.
 
 ## Fresh model retest
 

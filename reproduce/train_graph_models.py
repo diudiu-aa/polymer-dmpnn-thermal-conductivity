@@ -32,6 +32,7 @@ def arguments(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--experiment', choices=['table3', 'table4', 'table5'], default='table3')
     p.add_argument('--seed', type=int, choices=range(32101, 32106), default=32101)
+    p.add_argument('--training-seed', type=int, help='Optional new training randomness; fixed data split still uses --seed')
     p.add_argument('--arm', choices=['open', 'periodic', 'periodic_rank', 'balanced_control', 'multitask'], default='periodic')
     p.add_argument('--budget', type=int, choices=[60, 180, 600, 1800], default=600)
     p.add_argument('--output', type=Path, help='New directory, required only with --run')
@@ -46,11 +47,20 @@ def arguments(argv=None):
         p.error('Tables 3 and 5 use 600 fitting records')
     if args.run and args.output is None:
         p.error('--run requires a new --output directory')
+    if args.training_seed is not None and not 0 <= args.training_seed < 2**31 - 40000:
+        p.error('--training-seed must be between 0 and 2**31-40001')
     return args
 
 
-def main(argv=None):
-    args = arguments(argv)
+def state_digest(model):
+    h = hashlib.sha256()
+    for name, value in model.state_dict().items():
+        h.update(name.encode()); h.update(value.detach().cpu().contiguous().numpy().tobytes())
+    return h.hexdigest()
+
+
+def train_configuration(args, callback=None):
+    training_seed = args.seed if args.training_seed is None else args.training_seed
     records, splits, manifest = load_inputs()
     split = splits[str(args.seed)][args.experiment]
     train = split['train'][:args.budget]
@@ -58,7 +68,8 @@ def main(argv=None):
     target = np.array([float(records[i]['kappa_W_mK']) for i in train])
     mu, sd = float(target.mean()), float(target.std())
     q90, q95 = [float(np.sort(target)[math.ceil(q * len(target)) - 1]) for q in [.9, .95]]
-    config = {'experiment': args.experiment, 'seed': args.seed, 'arm': args.arm,
+    config = {'experiment': args.experiment, 'seed': args.seed, 'split_seed': args.seed,
+              'training_seed': training_seed, 'arm': args.arm,
               'fit_budget': len(train), 'evaluation_n': len(valid), 'epochs': 50,
               'batch_size': 16, 'target_mean': mu, 'target_sd': sd,
               'train_q90': q90, 'train_q95': q95,
@@ -77,13 +88,13 @@ def main(argv=None):
         smiles = records[rid]['smiles']
         if smiles not in cache:
             cache[smiles] = build_trimer_graph(smiles, periodic_closure=args.arm != 'open')
-    rng = np.random.default_rng(args.seed + 10000)
+    rng = np.random.default_rng(training_seed + 10000)
     permutations = [rng.permutation(len(train)) for _ in range(50)]
     binary = target >= q90
     hi, lo = np.flatnonzero(binary), np.flatnonzero(~binary)
     balanced_batches = []
     if args.arm == 'balanced_control':
-        rng = np.random.default_rng(args.seed + 1337)
+        rng = np.random.default_rng(training_seed + 1337)
         for _ in range(50):
             epoch = []
             for _ in range(math.ceil(len(train) / 16)):
@@ -91,13 +102,16 @@ def main(argv=None):
                 rng.shuffle(ix)
                 epoch.append(ix)
             balanced_batches.append(epoch)
-    torch.manual_seed(args.seed)
+    torch.manual_seed(training_seed)
     model = MultitaskDMPNN() if args.arm == 'multitask' else PeriodicDMPNN(133, 14, hidden_size=128, depth=3, dropout=.1)
-    torch.manual_seed(args.seed + 20000)
+    initial_state_sha256 = state_digest(model)
+    torch.manual_seed(training_seed + 20000)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
     model.train()
     start, step = time.monotonic(), 0
+    history = []
     for epoch in range(50):
+        loss_total, observations = 0.0, 0
         batches = (balanced_batches[epoch] if args.arm == 'balanced_control' else
                    [permutations[epoch][j:j + 16] for j in range(0, len(train), 16)])
         for ix in batches:
@@ -132,9 +146,21 @@ def main(argv=None):
                 raise RuntimeError('Non-finite training loss; run stopped')
             loss.backward()
             optimizer.step()
+            loss_total += float(loss.detach()) * len(ix)
+            observations += len(ix)
+        entry = {'epoch': epoch + 1, 'train_objective': loss_total / observations,
+                 'optimizer_steps': step, 'learning_rate': optimizer.param_groups[0]['lr'],
+                 'elapsed_seconds': time.monotonic() - start}
+        history.append(entry)
+        with (args.output / 'training_curve.csv').open('w', newline='') as f:
+            w = csv.DictWriter(f, fieldnames=list(entry)); w.writeheader(); w.writerows(history)
+        if callback is not None:
+            callback(entry)
         print(f'epoch={epoch+1}/50 elapsed_seconds={time.monotonic()-start:.1f}', flush=True)
     checkpoint = {'state_dict': model.state_dict(), 'seed': args.seed, 'arm': args.arm,
                   'target_mean': mu, 'target_sd': sd, 'fit_budget': len(train)}
+    if args.training_seed is not None:
+        checkpoint['training_seed'] = training_seed
     torch.save(checkpoint, args.output / 'weights.pt')
     # Evaluation happens after fitting; no validation-based stopping or selection.
     model.eval()
@@ -152,9 +178,15 @@ def main(argv=None):
         for j, rid in enumerate(valid):
             w.writerow([rid, records[rid]['kappa_W_mK'], values[j], scores[j] if scores else ''])
     (args.output / 'complete.json').write_text(json.dumps({'completed': True, 'steps': step,
+        'training_seed': training_seed, 'initial_state_sha256': initial_state_sha256,
+        'final_state_sha256': state_digest(model), 'pretrained_weights_loaded': False,
         'weight_sha256': hashlib.sha256((args.output / 'weights.pt').read_bytes()).hexdigest(),
         'elapsed_seconds': time.monotonic() - start}, indent=2) + '\n')
     return 0
+
+
+def main(argv=None):
+    return train_configuration(arguments(argv))
 
 if __name__ == '__main__':
     raise SystemExit(main())

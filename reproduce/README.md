@@ -160,3 +160,24 @@ for a short run; it does not change weights, thresholds or splits. --reference-d
 can point to a copy of the frozen public reference package; integrity checks still
 apply. No fitting occurs. The local browser uses the same runner asynchronously
 and allows stopping; it does not automatically start this computation on tab open.
+
+
+## New random-initialization training trials
+
+```bash
+python reproduce/train_from_scratch.py --repeats 1 --output fresh-training
+python reproduce/train_from_scratch.py --repeats 5 --training-seed 123456 --output repeatable-training
+```
+
+No released .pt file is needed. The original fixed Table-5 split(s), 600 fitting
+labels, 400 evaluation records, three arms and 50-epoch recipe remain unchanged.
+--training-seed controls only initialization/order/dropout, while split seeds
+32101..32105 retain their original roles. The default draws a new recorded start.
+Original predictions are read only after all new models and predictions are saved.
+A single repeat is compared to its matching original split with no SD; five
+repeats report sample SD. New errors, ranks and differences are reported even
+when worse. The workflow does not tune on evaluation data or retry for a better
+score. It writes optimizer steps, initial/final tensor hashes, curves, new weights,
+new predictions and comparison outputs. Use the browser for live progress/cancel.
+The legacy train_graph_models.py without --training-seed retains exact original
+randomness; supplying that new flag leaves --seed as the data-partition selector.
