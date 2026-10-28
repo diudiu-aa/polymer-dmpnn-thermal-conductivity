@@ -15,6 +15,10 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install .
       - run: python -m unittest discover -s tests -v
+      - name: Verify installed UI asset outside checkout
+        run: |
+          cd /tmp
+          python -I -c "from polymer_dmpnn.web import make_server; import threading, urllib.request; s=make_server(); threading.Thread(target=s.serve_forever,daemon=True).start(); r=urllib.request.urlopen('http://127.0.0.1:%s/' % s.server_address[1]); assert r.status==200 and b'predict-form' in r.read(); s.shutdown(); s.server_close()"
       - run: polymer-kappa --smiles '*CC*'
       - run: python reproduce/paper_tables.py --verify --output reproduced-paper-tables
       - run: python reproduce/evaluate_checkpoints.py --models table3_B600_periodic_32101 table5_B600_multitask_32101 --output checkpoint-verification

@@ -6,3 +6,5 @@ build/
 dist/
 *.egg-info/
 predictions.csv
+
+.ui-venv/

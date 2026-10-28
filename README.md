@@ -2,6 +2,20 @@
 
 **中文快速开始在本页下方。** [完整中文教程](README_zh-CN.md) · [复现数据](reproduce/data/) · [训练输入与划分](reproduce/inputs/) · [65份论文模型权重](polymer_dmpnn/paper_weights/) · [示例CSV](examples/polymers.csv)
 
+## 图形界面：推荐第一次测试使用
+
+![本地预测工作台实测界面](docs/interface.png)
+
+1. 下载并解压完整仓库，先安装 **Python 3.10–3.13（建议3.12）**。
+2. 在仓库文件夹打开终端，运行 `python start_ui.py`（macOS通常为 `python3 start_ui.py`）。首次会自动创建专用环境并联网安装依赖，完成后打开浏览器。
+3. 点击示例结构体验单条预测；或切换“批量CSV”，上传文件、选择结构列并下载结果。也可直接点击“开始五表复算”核对论文表1–5。
+
+提供双击启动入口：[Windows](start_ui_windows.bat)、[macOS](start_ui_macos.command)、[Linux](start_ui_linux.sh)。
+如果系统不能直接执行入口，请使用上面的Python命令；不要关闭系统安全保护。
+首次安装可能需要数分钟及数百MB以上磁盘空间。后续复用仓库内`.ui-venv`，终端需保持运行，关闭时按Ctrl+C。
+这是运行在**你自己电脑**的界面，GitHub网页本身不执行模型；输入不会发到云端，不需要API密钥。
+[完整界面教程、输入要求与常见问题](docs/USER_GUIDE_zh-CN.md)。
+
 ## 第一次使用 从这里开始
 
 下载整个仓库：点击 **Code → Download ZIP** 并解压，或使用下面的 `git clone`。
@@ -88,6 +102,30 @@ tables, per-seed metrics and `verification.json`. All inputs are included.
 No private project directory, account, network, or raw database is needed.
 The output directory must be new. Expected statistics verify the calculation;
 they are not copied as generated results.
+
+## Local browser interface
+
+Run `python start_ui.py` from the downloaded repository (use `python3` on macOS if needed).
+Python 3.10–3.13 must already be installed; 3.12 is recommended. On first launch the
+bootstrap creates `.ui-venv` and installs this package and dependencies using pip.
+A local browser page then opens. Keep the terminal running; Ctrl+C stops it.
+OS launchers are also included: `start_ui_windows.bat`, `start_ui_macos.command`,
+and `start_ui_linux.sh`. If double-clicking is unavailable, use the Python command.
+
+The Chinese-language UI supports single SMILES with 2D depiction, CSV upload or
+paste, column selection, all 65 individual models plus the legacy ensemble,
+optional reference-label MAE/RMSE/R², CSV/JSON downloads, and verified five-table
+replay with a downloadable ZIP. The default is one Table 5 periodic seed, unlike
+the backwards-compatible CLI default ensemble. No fitting is started by this UI.
+Predictions and replay run locally on loopback; no API key or cloud upload is used.
+First installation needs internet and disk space for PyTorch and other packages.
+
+With the package already installed, `python -m polymer_dmpnn.web` (or
+`polymer-kappa-ui`) starts the same interface. Run from the complete repository
+for table replay, or pass `--repository /path/to/downloaded/repository`.
+A package-only install supports inference but does not contain the repository's
+`reproduce/` dataset. CSV batches are limited to 1,000 rows and a 2 MB request;
+use the CLI for larger jobs. [Detailed Chinese UI guide](docs/USER_GUIDE_zh-CN.md).
 
 ## Install and predict
 
