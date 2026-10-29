@@ -14,7 +14,19 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install .
-      - run: python -m unittest discover -s tests -v
+      - name: Prepare checksum-locked completion resources
+        run: python reproduce/current_manuscript.py --prepare-only
+      - name: Full original suite including retraining
+        if: ${{ !contains(github.event.head_commit.message, '[completion-only]') }}
+        run: python -m unittest discover -s tests -v
+      - name: Saved-table tests for completion-only archival changes
+        if: ${{ contains(github.event.head_commit.message, '[completion-only]') }}
+        run: python -m unittest discover -s tests -p test_paper_reproduction.py -v
+      - name: Completion replay and integrity tests without retraining
+        run: |
+          python -m unittest discover -s reproduce/completion/tests -v
+          python reproduce/completion/replay.py --output reproduced-completion
+
       - name: Verify installed UI asset outside checkout
         run: |
           cd /tmp
@@ -31,4 +43,5 @@ jobs:
             ci-training-results/
             reproduced-paper-tables/
             reproduced-optimization/
+            reproduced-completion/
             checkpoint-verification/verification.json
