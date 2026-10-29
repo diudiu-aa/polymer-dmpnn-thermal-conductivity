@@ -1,0 +1,18 @@
+{
+  "reason": "Analytical correction: five copies can expose capped endpoint invariants at distance2 when both wildcard sites share an attachment atom. Seven keeps all cap atoms beyond radius2. This rule is independent of observed performance.",
+  "alpha_grid": [
+    0.0001,
+    0.001,
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0
+  ],
+  "folds": "same training-only cluster GroupKFold3, five original600/400 splits",
+  "changed_feature_rule_only": true,
+  "max_solves": 110,
+  "max_wall_seconds": 600,
+  "retained_old_five_copy_results": true,
+  "script_sha256": "6618333509329115decb859aa2961a468a07031d9d924752629cc0db52f2068a"
+}

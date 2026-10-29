@@ -1,0 +1,80 @@
+{
+  "scope": "valid frozen configurations, IDs, CV scores, cost and convergence records; no invalid pilot labels, manuscripts or private logs",
+  "source": "PolyOmics, DOI 10.57967/hf/7475; CC BY 4.0 for source-derived identities",
+  "files": {
+    "kernel_initial_cv_scores.csv": "533ff33e886d500a467d19fa79bb14aa6539258a8cfb9a998f0ac0bd4d975056",
+    "graph_fit_costs.csv": "0b5a6c4b56c7fbfd47360139b30d75cacd5105db832e5ae6b4919da5915d7239",
+    "graph_cv_folds.csv": "9b04d2d7f0a0b7bc3d7d8dddbbede9715e136fbb14f71761d9f483c250896110",
+    "graph_learning_curves.csv": "f93ad0b5e470f08db3150c7c68d4895ae877a5f46c3f0abe790df6c78852f274",
+    "kernel_initial_protocol.json": "154f35b14d3bc5507a4a2b58e3970676d89a38bb44a65e2e9466eb06e2a52182",
+    "kernel_context7_cv_scores.csv": "aa755ff98c42b705fa3bc6c4860b27d326358458716d812159d9941bd15d55a1",
+    "scaling_frozen_ids.json.gz": "aecdd0bb557b6acbef6d82933f92af992698facc6eaeeaab173b6af45ca39480",
+    "kernel_context7_protocol.json": "325ce631bef0fd3f6ff96bc59438875893e5ff07b310b325916f11da1112dff0",
+    "graph_protocol.json": "a5177f794800d19367c91490675af8a032f021eaf7a1513df7f7c4413fe83cfe",
+    "graph_cv_configurations.csv": "c6ca1c7137fe563e9c31338b20d2d1741078db7e66b232c9cc9c381f8675efea",
+    "graph_final_choice.json": "efb632704d0ca55b6fcd97163d020f15229044b86446542ddcf28a29dc5b102c",
+    "graph_frozen_ids.json.gz": "b31d204fca1914946240e7f14acec0dbbbf274c493067da5be327f6da6d8cd45"
+  },
+  "provenance": {
+    "graph_protocol.json": {
+      "source_relative": "graph_ablation/protocol.json",
+      "original_sha256": "172a5158167848c947b088e63449a974433a4b3fab4c7bbd4eb4323b809d2e2f",
+      "change": "project absolute paths replaced with PROJECT_ROOT; optional gzip only"
+    },
+    "graph_frozen_ids.json.gz": {
+      "source_relative": "graph_ablation/frozen_ids.json",
+      "original_sha256": "160192d23dac8fddbea96d846b33c178c3fd84830e40231f2c714f8acf7de43f",
+      "change": "project absolute paths replaced with PROJECT_ROOT; optional gzip only"
+    },
+    "graph_final_choice.json": {
+      "source_relative": "graph_ablation/final_configuration_lock.json",
+      "original_sha256": "efb632704d0ca55b6fcd97163d020f15229044b86446542ddcf28a29dc5b102c",
+      "change": "project absolute paths replaced with PROJECT_ROOT; optional gzip only"
+    },
+    "scaling_frozen_ids.json.gz": {
+      "source_relative": "sample_scaling/revised_valid_v2/selection_lock.json",
+      "original_sha256": "d5a2970de1127f5867305dfb49ab67fa7e0b072b33478263057de89c15ff3d26",
+      "change": "project absolute paths replaced with PROJECT_ROOT; optional gzip only"
+    },
+    "kernel_initial_protocol.json": {
+      "source_relative": "kernel_baselines/protocol.json",
+      "original_sha256": "154f35b14d3bc5507a4a2b58e3970676d89a38bb44a65e2e9466eb06e2a52182",
+      "change": "project absolute paths replaced with PROJECT_ROOT; optional gzip only"
+    },
+    "kernel_context7_protocol.json": {
+      "source_relative": "kernel_baselines/context7_correction/protocol.json",
+      "original_sha256": "325ce631bef0fd3f6ff96bc59438875893e5ff07b310b325916f11da1112dff0",
+      "change": "project absolute paths replaced with PROJECT_ROOT; optional gzip only"
+    },
+    "graph_cv_configurations.csv": {
+      "source_relative": "graph_ablation/cv_config_results.csv",
+      "sha256": "c6ca1c7137fe563e9c31338b20d2d1741078db7e66b232c9cc9c381f8675efea",
+      "change": "none"
+    },
+    "graph_cv_folds.csv": {
+      "source_relative": "graph_ablation/cv_fold_results.csv",
+      "sha256": "9b04d2d7f0a0b7bc3d7d8dddbbede9715e136fbb14f71761d9f483c250896110",
+      "change": "none"
+    },
+    "graph_fit_costs.csv": {
+      "source_relative": "graph_ablation/fit_costs.csv",
+      "sha256": "0b5a6c4b56c7fbfd47360139b30d75cacd5105db832e5ae6b4919da5915d7239",
+      "change": "none"
+    },
+    "kernel_initial_cv_scores.csv": {
+      "source_relative": "kernel_baselines/all_cv_scores.csv",
+      "sha256": "533ff33e886d500a467d19fa79bb14aa6539258a8cfb9a998f0ac0bd4d975056",
+      "change": "none"
+    },
+    "kernel_context7_cv_scores.csv": {
+      "source_relative": "kernel_baselines/context7_correction/all_cv_scores.csv",
+      "sha256": "aa755ff98c42b705fa3bc6c4860b27d326358458716d812159d9941bd15d55a1",
+      "change": "none"
+    },
+    "graph_learning_curves.csv": {
+      "source": "37 archived training curves concatenated, each 50 epochs",
+      "rows": 1850,
+      "change": "run column added, original numerical strings unchanged"
+    }
+  }
+}

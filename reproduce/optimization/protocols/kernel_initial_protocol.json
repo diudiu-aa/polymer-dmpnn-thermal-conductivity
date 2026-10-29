@@ -1,0 +1,49 @@
+{
+  "frozen_date": "2026-10-29",
+  "experiment": "table5",
+  "seeds": [
+    32101,
+    32102,
+    32103,
+    32104,
+    32105
+  ],
+  "fit_labels": 600,
+  "evaluation_labels": 400,
+  "selection": "minimum threefold GroupKFold mean MAE on training cluster_id; tie larger alpha; no V selection",
+  "alpha_grid": [
+    0.0001,
+    0.001,
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0
+  ],
+  "feature_variants": [
+    "unit",
+    "boundary_context"
+  ],
+  "fingerprints": "2048bit Morgan radius2,includeChirality=False matching existing tuned fingerprint baseline; boundary context uses central unit origins of sanitized 5copy open context",
+  "targets": "center y by inner-fit mean; no evaluation normalization",
+  "outputs": "all CV scores, fitted kernel coefficients, ID folds, prediction-only files locked before common evaluation",
+  "metrics": [
+    "MAE",
+    "R2",
+    "trainingq95tail",
+    "fixedkappa>=.30",
+    "P@10/20/50/100",
+    "hit counts"
+  ],
+  "wall_cap_seconds": 600,
+  "new_graph_fits": 0,
+  "max_kernel_solves": 220,
+  "failure_policy": "stop on chemistry,identity,nonfinite,timeout; no grid revision after evaluation",
+  "scope": "retrospective same-source public table5 data; no old test/new restricted labels",
+  "script_sha256": "e0992d7cb2bce2c4a0f3e4f44150b60ebbf789e42b281d186be2a12ea153fabe",
+  "inputs_sha256": {
+    "outputs/polymer-dmpnn-github-repo/reproduce/inputs/manifest.json": "9a171f838e16cf2f6df59bec984a1a857109822bc016281d63a16323528e8482",
+    "outputs/polymer-dmpnn-github-repo/reproduce/inputs/records.csv.gz": "19a0b565b3403d80c154ec0f879e93ea281627c492c61b8761e86d28b16748df",
+    "outputs/polymer-dmpnn-github-repo/reproduce/inputs/splits.json": "ae0e2882fce5f0d84a24764ee6016771b568f91b9f84d73ca47fbb30467c900b"
+  }
+}

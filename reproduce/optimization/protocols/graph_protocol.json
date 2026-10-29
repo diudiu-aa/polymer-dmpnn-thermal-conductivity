@@ -1,0 +1,91 @@
+{
+  "configs": [
+    {
+      "id": "periodic_L3D2",
+      "arm": "periodic",
+      "length": 3,
+      "depth": 2
+    },
+    {
+      "id": "periodic_L3D3",
+      "arm": "periodic",
+      "length": 3,
+      "depth": 3
+    },
+    {
+      "id": "periodic_L3D5",
+      "arm": "periodic",
+      "length": 3,
+      "depth": 5
+    },
+    {
+      "id": "open_L3D2",
+      "arm": "open",
+      "length": 3,
+      "depth": 2
+    },
+    {
+      "id": "open_L3D3",
+      "arm": "open",
+      "length": 3,
+      "depth": 3
+    },
+    {
+      "id": "open_L3D5",
+      "arm": "open",
+      "length": 3,
+      "depth": 5
+    },
+    {
+      "id": "open_L5D3",
+      "arm": "open",
+      "length": 5,
+      "depth": 3
+    },
+    {
+      "id": "open_L7D3",
+      "arm": "open",
+      "length": 7,
+      "depth": 3
+    },
+    {
+      "id": "open_L7D5",
+      "arm": "open",
+      "length": 7,
+      "depth": 5
+    }
+  ],
+  "folds": 3,
+  "CV_fits": 27,
+  "maximum_final_fits": 10,
+  "fit_cap": 45,
+  "per_fit_seconds_cap": 300,
+  "total_fit_seconds_cap": 1800,
+  "epochs": 50,
+  "batch_size": 16,
+  "hidden": 128,
+  "dropout": 0.1,
+  "optimizer": "Adam default betas/eps, original step-dependent LR (2 epoch warmup 1e-4 to1e-3, exponential to1e-4)",
+  "selection": "mean of 3 fold MAEs; ties within1e-12 choose shortest then shallowest; no V access for selection",
+  "depth_definition": "D includes edge initialization; D-1 nonbacktracking updates, atom embedding gathers updated incoming edge states; up to D directed bonds of atom context",
+  "fairness": "Both arms 3 depth configs at L3 (9 CV fits each). Open arm 3 extra length/cross configs (9 additional CV fits), reported separately; expanded open winner is not an equal-search comparison.",
+  "final": "Select equal-depth winner in each arm; also lock expanded open winner, but only equal-budget arm winners are five-seed finalists; extra open length results are training-CV mechanism analysis unless separately authorized. Reuse original L3D3 saved predictions if selected. All final selection locked before any V prediction generation and one scoring pass.",
+  "code_SHA256": {
+    "PROJECT_ROOT/outputs/polymer-dmpnn-github-repo/polymer_dmpnn/graph.py": "a7c640ea02774e9dc49aedcd1260e6ec5b02ef7a537244d77817e160f766ea40",
+    "PROJECT_ROOT/outputs/polymer-dmpnn-github-repo/reproduce/train_graph_models.py": "e3cbf141b35cbfa7f5b88e770ec341aaedcdf438b7dbee16245c68ce41424a34",
+    "PROJECT_ROOT/outputs/polymer-dmpnn-github-repo/reproduce/fixed_inputs.py": "7076801116ccb8e92c54f82aeead6cb0edeed377313292cf6562af385794a8ca",
+    "PROJECT_ROOT/outputs/polymer-dmpnn-github-repo/reproduce/inputs/manifest.json": "9a171f838e16cf2f6df59bec984a1a857109822bc016281d63a16323528e8482",
+    "PROJECT_ROOT/outputs/model-optimization-2026-10-29/graph_ablation/run_ablation.py": "dfd4dbbc6e8695a5c1dc8c7c817d3a4e6fc6df0b4b037c019c61d3cb60a1ce63"
+  },
+  "exact_ids_sha256": "160192d23dac8fddbea96d846b33c178c3fd84830e40231f2c714f8acf7de43f",
+  "public_input_source": {
+    "dataset": "PolyOmics general_polymers",
+    "url": "https://huggingface.co/datasets/yhayashi1986/PolyOmics",
+    "revision": "041e5834ea1a48682fae12dc39ccd723bcd4f771",
+    "license": "CC-BY-4.0",
+    "doi": "10.57967/hf/7475",
+    "raw_sha256": "71e955ac1e90574ad009ccbf1238e595cf42905f3e600523ba2a6ea65c350213",
+    "metadata_sha256": "cbb9afe19c93a3fb8c896431e8cede534b4cd8092307fc96d639fa8a59b369ea",
+    "cluster_index_sha256": "cf23745c325eae8bd8c4b7c3f1735b3950df92a3a44d9c61ff324177b2299114"
+  }
+}

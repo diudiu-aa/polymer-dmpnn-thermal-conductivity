@@ -1,0 +1,22 @@
+{
+  "choices": {
+    "periodic": {
+      "id": "periodic_L3D2",
+      "arm": "periodic",
+      "length": 3,
+      "depth": 2,
+      "mean_fold_mae": 0.0218291968425844
+    },
+    "open": {
+      "id": "open_L3D2",
+      "arm": "open",
+      "length": 3,
+      "depth": 2,
+      "mean_fold_mae": 0.021926726497094564
+    }
+  },
+  "selection_lock_sha256": "d733090e30d47ce8152f7a8561f8c6cff487fc2e3e7353de1d8c3912f21bcbbe",
+  "addendum_sha256": "183f8fb15a6da346b9ed28aabbbd8627a763095546ea2b8afd87eb1418c63a63",
+  "driver_sha256": "5cccfb3b10a78c6d76132bdd8a5acfd114cc7e44e5ca62b8b505a77b42d31175",
+  "V_prediction_started": false
+}
