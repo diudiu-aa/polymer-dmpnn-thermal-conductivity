@@ -1,0 +1,6 @@
+include LICENSE THIRD_PARTY_DATA.md
+include reproduce/inputs/records.csv.gz reproduce/inputs/splits.json
+recursive-include reproduce/completion *.py *.json *.csv *.gz *.pt *.md *.sha256
+
+recursive-include reproduce/current_figures *.py *.json *.csv *.md
+include reproduce/current_manuscript.py

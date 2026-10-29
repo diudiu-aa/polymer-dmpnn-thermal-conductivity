@@ -1,3 +1,14 @@
+# 当前稿件复算入口
+
+当前主文表1–3及图1–5：
+
+```bash
+python -m pip install ".[reproduce,figures]"
+python reproduce/current_manuscript.py --output current-paper --figures --download-reference
+```
+
+这是保存预测的指标/条件区间复算与图件重绘，不是重新训练。25份新增权重和600标签长日程重训入口见[completion资源包](reproduce/completion_v0_9.tar.gz)。以下网页说明保留原五表发布版；新的主表编号由current_manuscript命令生成。
+
 # 聚合物热导率模型与论文复现
 
 本仓库包含预测工具、论文**表1–5的逐条结果复算包**，以及主要模型的固定输入、

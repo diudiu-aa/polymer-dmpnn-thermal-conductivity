@@ -1,5 +1,25 @@
 # Polymer D-MPNN thermal-conductivity models and paper reproduction
 
+## 当前四问题稿件的完整复算 v0.9
+
+当前主稿围绕周期连接、标签与训练预算、高值目标、跨来源适用范围组织。新增公开模块包含25份精确权重（10份600标签长日程、15份3000标签三目标）、逐条预测与配对分析。
+
+新增材料完整保存在校验锁定的`reproduce/completion_v0_9.tar.gz`中（含全部源码、数据说明、25权重及图源）。首次运行下述命令会自动解包，不需要手工操作；解包后的中英文说明位于`reproduce/completion/`。
+
+下载后在仓库根目录运行：
+
+```bash
+python -m pip install ".[reproduce,figures]"
+python reproduce/current_manuscript.py --output current-paper --figures --download-reference
+```
+
+这会从逐条保存结果重新计算当前主文表1–3、条件区间、11簇敏感性和实际Top-K命中，并重新绘制主文图1–5。它不重新训练；APFE真值临时从作者固定源校验获取。只复算数字可省略`--figures --download-reference`。每次输出目录必须新建。
+
+需要实际重新训练预算对照时，使用`python reproduce/completion/retrain_budget.py --run --seed 32101 --arm periodic --output new-budget-fit`；不加`--run`只检查设置。新结构预测、25模型清单、数据许可和可复现范围见[完整源码与25权重资源包](reproduce/completion_v0_9.tar.gz)及[Current reproduction entry](reproduce/current_manuscript.py)。
+
+下面的网页和15模型训练入口保留的是**原五表发布版**，其“表5”编号不是本轮重排后的主表编号。当前三表的对应关系由上面的命令输出，历史结果仍可核对。
+
+
 **中文快速开始在本页下方。** [完整中文教程](README_zh-CN.md) · [复现数据](reproduce/data/) · [训练输入与划分](reproduce/inputs/) · [65份论文模型权重](polymer_dmpnn/paper_weights/) · [示例CSV](examples/polymers.csv)
 
 ## 下载后运行论文主结果
@@ -307,3 +327,11 @@ python reproduce/apfe/replay.py --download-reference --run-models --intervals --
 Install the project first (`python -m pip install .`) for model commands. The added [English replay guide](reproduce/optimization/README_English.md), [中文复算说明](reproduce/optimization/README.md) and [APFE guide](reproduce/apfe/README.md) distinguish saved-result replay, new inference and retraining. Batch prediction: `python -m polymer_dmpnn.optimization --input examples/polymers.csv --output predictions.csv`.
 
 The added package covers 70 groups/1,050 per-seed metric checks and 48 conditional intervals; ten additional frozen weights are provided. Internal MAE reached 0.01868 at 3,000 labels and 50 epochs, with label and optimization effects controlled separately. Transfer to 93 retained APFE candidates was substantially poorer (periodic MAE 0.09482, R² 0.0418); overall periodic superiority was not established there. These are amorphous-polymer MD predictions, not validated experimental conductivity values.
+
+## Controlled completion supplement
+
+The [independent completion module](reproduce/completion_v0_9.tar.gz) releases 25 exact additional checkpoints, record-level replay of the HK01 objective and 600-label/9400-update controls, paired cluster intervals, structure sensitivity and three reproducible figures. See the [Chinese instructions](reproduce/completion_v0_9.tar.gz). It keeps saved-prediction replay, individual-checkpoint inference and the explicitly enabled core-budget retraining route separate; it does not replace older defaults or claim all exploratory training is independently reproducible.
+
+```bash
+python reproduce/completion/replay.py --output reproduced-completion
+```
