@@ -1,3 +1,9 @@
+# 当前稿件与历史发布版
+
+当前主文表1–3、图1–5及新条件区间：`python reproduce/current_manuscript.py --output current-paper --figures --download-reference`。仅复算指标可省略两个figure参数；该命令从三个版本明确的逐条结果包计算，不加载训练权重或训练。
+
+新增25模型、直接比较/删簇敏感性/预算交互及可移植长日程重训见[completion resource archive](completion_v0_9.tar.gz)。以下原表编号属于原五表发布版，保留历史映射和原始结果。
+
 # Reproduce manuscript Tables 1–5
 
 Run this command from a downloaded repository with Python 3.10 or newer:
@@ -217,3 +223,11 @@ python reproduce/apfe/replay.py --download-reference --run-models --intervals --
 Install the project first (`python -m pip install .`) for model commands. The added [English replay guide](reproduce/optimization/README_English.md), [中文复算说明](reproduce/optimization/README.md) and [APFE guide](reproduce/apfe/README.md) distinguish saved-result replay, new inference and retraining. Batch prediction: `python -m polymer_dmpnn.optimization --input examples/polymers.csv --output predictions.csv`.
 
 The added package covers 70 groups/1,050 per-seed metric checks and 48 conditional intervals; ten additional frozen weights are provided. Internal MAE reached 0.01868 at 3,000 labels and 50 epochs, with label and optimization effects controlled separately. Transfer to 93 retained APFE candidates was substantially poorer (periodic MAE 0.09482, R² 0.0418); overall periodic superiority was not established there. These are amorphous-polymer MD predictions, not validated experimental conductivity values.
+
+## Controlled completion / 本轮受控补充
+
+See [completion/README.md](completion/README.md) and [completion/README_English.md](completion/README_English.md). One command recomputes 25 new-model metric groups and the paired robustness analyses from compressed record values; exact individual weights and a default-dry-run 600/9400 retraining entry are separate routes. The original table replay above is unchanged.
+
+```bash
+python reproduce/completion/replay.py --output reproduced-completion
+```
