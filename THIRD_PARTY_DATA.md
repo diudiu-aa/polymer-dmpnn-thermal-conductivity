@@ -39,3 +39,9 @@ contains curated excerpts and derived predictions, **not the full databases**.
 No PoLyInfo export, restricted experimental table, publisher PDF, manuscript,
 private project log, or complete raw database is redistributed here. Source
 licenses and attribution must accompany redistributed derived data.
+
+## Additional optimization and APFE analyses
+
+- `reproduce/optimization/data/` adds evaluated PolyOmics subsets and derived predictions with the same fixed source revision and CC BY 4.0 attribution above. Its group and statistic counts are separate from the original Tables 1–5 bundle.
+- Ten `paper_weights/optimization_B3000_*.pt` files are newly released trained weights under the software MIT license, with explicit configuration in `optimization_manifest.json`. Original weight bytes/defaults are unchanged.
+- `reproduce/apfe/` bundles our derived predictions, source IDs, inclusion decisions and aggregate metric references. It does **not** bundle the original per-candidate reference labels or author PDFs. The command fetches the fixed public author CSV from SJTU-MI/APFEforPI and checks its checksum. Cite Huang et al., JMCA 2023, DOI 10.1039/D3TA03370H and the RadonPy work. The author repository's software license is not asserted to license the underlying data.

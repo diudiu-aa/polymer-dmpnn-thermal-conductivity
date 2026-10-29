@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "source": "PolyOmics fixed source revision 041e5834ea1a48682fae12dc39ccd723bcd4f771",
+  "source_license": "CC BY 4.0; https://doi.org/10.57967/hf/7475",
+  "changes": "subset selection, original record IDs and assigned clusters retained; predictions and frozen thresholds added",
+  "scope": "saved prediction metric replay, not training or external validation",
+  "groups": 70,
+  "rows": 28000,
+  "unique_record_ids": 1738,
+  "source_artifacts": {
+    "graph_ablation/V_scored_predictions.csv": "64a37256d1d5f29059bfdd1920d6427084a077511c5491c33c4c3e449b276f24",
+    "graph_ablation/V_metrics_by_seed.csv": "487bd64ec5eca30284b43a523a7a8178482116934c6771368f838db08bc15b4e",
+    "kernel_baselines/results.json": "75dd83ed5a5c8e13866d1a8e5e14cf8572260d02acf92017d8fafd54dc341998",
+    "kernel_baselines/scored_predictions_32101_unit.csv": "ae755ba4dcd842c4c4b0d05b878a80e63b8e0b37fc50f98f598db180a452892a",
+    "kernel_baselines/scored_predictions_32102_unit.csv": "cd72c915a21e969da173e141bf2a44d987502ec43e9befcab36e2195c6544e03",
+    "kernel_baselines/scored_predictions_32103_unit.csv": "87cebbbf7fdd7317ebc553ca94dd84a95058d3256904d56e5c148148b3614b09",
+    "kernel_baselines/scored_predictions_32104_unit.csv": "c845172970de722cd724b3901da27edc195d0e06063179a2fbde992f782ba9a5",
+    "kernel_baselines/scored_predictions_32105_unit.csv": "f89d627c06214ef546aaeaf8056d1e143cd5cd49c06cad5582c03db0b43197d8",
+    "kernel_baselines/context7_correction/results.json": "0c74b2eb06eabf418e7c1c571139c43b703978132ed59b22bb8d137227ac48fe",
+    "kernel_baselines/context7_correction/scored_predictions_32101.csv": "cc36bb07359e0b265f59702efb5e62bd0e187547364b496ee4111f1adcf474b0",
+    "kernel_baselines/context7_correction/scored_predictions_32102.csv": "62d0485a9adec4be82685b5b847606588dca3bdaeb2e8f1054d0bd019cdfd87c",
+    "kernel_baselines/context7_correction/scored_predictions_32103.csv": "c59e549e708014634b7df378f289093a748dacee6208cefa263aa2e3faeb123b",
+    "kernel_baselines/context7_correction/scored_predictions_32104.csv": "ec0d4c7b3119fbe466ad4a8e5d580ea8b9e05b15dfae47cb0437bcdf61cbdc51",
+    "kernel_baselines/context7_correction/scored_predictions_32105.csv": "6f618b181484ae1f3a41c7a86d863d0cf38eb638ba4c77acc52f1c4ee54387e0",
+    "sample_scaling/revised_valid_v2/record_level_predictions.csv.gz": "6bb97b8afcdaaa94929c09db2de2fd78f1f074531429e99e3d14ac4677943c89",
+    "sample_scaling/revised_valid_v2/per_seed_metrics.json": "d7036895f1f977cf9dcddbb9fec4d98bb91755747d70e6892f84c661c5fe6b5d",
+    "graph_ablation/paired_shared_cluster_intervals.csv": "f952cff37e2548e178ef6f66465b6b3c5a4ca01396a444ca3fc2008c3306003c",
+    "kernel_baselines/context7_correction/paired_intervals.json": "1bd1b1b72be75bbc44a032c5881933eaff3cca49f91993daaa71a8c1981f2bb3",
+    "sample_scaling/revised_valid_v2/paired_cluster_bootstrap.json": "367f912cc04ec9b15f72326c57b135b6d011a528f7e15c062851f45a9ef3bf9b"
+  },
+  "files": {
+    "data/scaling_intervals.json": "367f912cc04ec9b15f72326c57b135b6d011a528f7e15c062851f45a9ef3bf9b",
+    "data/expected_metrics.json": "c1b22f58d484b23838bd04022ebd7b9e17484b872d9e22f6ff6a260c2132b579",
+    "data/predictions.csv.gz": "4d6c17958815b140428c1cf234442fc0fed80ec065bdd9065bc4ba851df078e0",
+    "data/graph_intervals.csv": "f952cff37e2548e178ef6f66465b6b3c5a4ca01396a444ca3fc2008c3306003c",
+    "data/kernel_context_intervals.json": "1bd1b1b72be75bbc44a032c5881933eaff3cca49f91993daaa71a8c1981f2bb3"
+  }
+}

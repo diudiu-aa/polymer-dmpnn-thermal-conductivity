@@ -1,0 +1,29 @@
+[
+  {
+    "metric": "mae",
+    "difference": 0.0031419040317417326,
+    "interval_lower": 0.0018876109593235133,
+    "interval_upper": 0.004407740759822129,
+    "valid_draws": 10000,
+    "favorable_seeds": 0,
+    "conditional_on_fixed_models": true
+  },
+  {
+    "metric": "tail_mae",
+    "difference": 0.02844783287339993,
+    "interval_lower": 0.021607098858583564,
+    "interval_upper": 0.03366541092038139,
+    "valid_draws": 10000,
+    "favorable_seeds": 0,
+    "conditional_on_fixed_models": true
+  },
+  {
+    "metric": "fixed_high_mae",
+    "difference": 0.024437825265175333,
+    "interval_lower": 0.01714338711566744,
+    "interval_upper": 0.030040394613722713,
+    "valid_draws": 10000,
+    "favorable_seeds": 0,
+    "conditional_on_fixed_models": true
+  }
+]

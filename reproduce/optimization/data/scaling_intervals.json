@@ -1,0 +1,698 @@
+[
+  {
+    "new": [
+      "epochs",
+      1800,
+      "open"
+    ],
+    "reference": [
+      "epochs",
+      600,
+      "open"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.0031652905585689145,
+      "ci95": [
+        -0.004349325642415821,
+        -0.002092225186614368
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.0029847337103526624,
+      "ci95": [
+        -0.010196979732589031,
+        0.0026442753029904957
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.0024218408674637768,
+      "ci95": [
+        -0.011452343884531146,
+        0.00400111407696039
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.0031652905585689145,
+    "mae_cluster_bootstrap95": [
+      -0.004349325642415821,
+      -0.002092225186614368
+    ],
+    "fixed030_difference_new_minus_reference": -0.0029847337103526624,
+    "fixed030_cluster_bootstrap95": [
+      -0.010196979732589031,
+      0.0026442753029904957
+    ],
+    "base600_q95_difference_new_minus_reference": -0.0024218408674637768,
+    "base600_q95_cluster_bootstrap95": [
+      -0.011452343884531146,
+      0.00400111407696039
+    ]
+  },
+  {
+    "new": [
+      "epochs",
+      1800,
+      "periodic"
+    ],
+    "reference": [
+      "epochs",
+      600,
+      "periodic"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.0019319285802522471,
+      "ci95": [
+        -0.0026189571402260624,
+        -0.0012280585642887726
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.0028660612990346686,
+      "ci95": [
+        -0.008665230821995261,
+        0.0017355143123490417
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.002654080713673056,
+      "ci95": [
+        -0.010172447988607863,
+        0.0026149545339671214
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.0019319285802522471,
+    "mae_cluster_bootstrap95": [
+      -0.0026189571402260624,
+      -0.0012280585642887726
+    ],
+    "fixed030_difference_new_minus_reference": -0.0028660612990346686,
+    "fixed030_cluster_bootstrap95": [
+      -0.008665230821995261,
+      0.0017355143123490417
+    ],
+    "base600_q95_difference_new_minus_reference": -0.002654080713673056,
+    "base600_q95_cluster_bootstrap95": [
+      -0.010172447988607863,
+      0.0026149545339671214
+    ]
+  },
+  {
+    "new": [
+      "epochs",
+      3000,
+      "open"
+    ],
+    "reference": [
+      "epochs",
+      600,
+      "open"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.004303584276691568,
+      "ci95": [
+        -0.005592867231572822,
+        -0.0031696828364757342
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.004040919828423518,
+      "ci95": [
+        -0.011136572707992226,
+        0.003668259307008407
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.0033186490182002086,
+      "ci95": [
+        -0.011755900249719703,
+        0.0053880099060567635
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.004303584276691568,
+    "mae_cluster_bootstrap95": [
+      -0.005592867231572822,
+      -0.0031696828364757342
+    ],
+    "fixed030_difference_new_minus_reference": -0.004040919828423518,
+    "fixed030_cluster_bootstrap95": [
+      -0.011136572707992226,
+      0.003668259307008407
+    ],
+    "base600_q95_difference_new_minus_reference": -0.0033186490182002086,
+    "base600_q95_cluster_bootstrap95": [
+      -0.011755900249719703,
+      0.0053880099060567635
+    ]
+  },
+  {
+    "new": [
+      "epochs",
+      3000,
+      "periodic"
+    ],
+    "reference": [
+      "epochs",
+      600,
+      "periodic"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.003452289630233171,
+      "ci95": [
+        -0.004377570701851673,
+        -0.002573755153546703
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.005676357379176843,
+      "ci95": [
+        -0.013230962681287187,
+        0.00020866058962079644
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.005507869668327091,
+      "ci95": [
+        -0.013801331918792084,
+        0.0015201172289182952
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.003452289630233171,
+    "mae_cluster_bootstrap95": [
+      -0.004377570701851673,
+      -0.002573755153546703
+    ],
+    "fixed030_difference_new_minus_reference": -0.005676357379176843,
+    "fixed030_cluster_bootstrap95": [
+      -0.013230962681287187,
+      0.00020866058962079644
+    ],
+    "base600_q95_difference_new_minus_reference": -0.005507869668327091,
+    "base600_q95_cluster_bootstrap95": [
+      -0.013801331918792084,
+      0.0015201172289182952
+    ]
+  },
+  {
+    "new": [
+      "steps",
+      3000,
+      "open"
+    ],
+    "reference": [
+      "epochs",
+      600,
+      "open"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.001573668764574991,
+      "ci95": [
+        -0.0024441149051162,
+        -0.000772243834002539
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.004533970906335097,
+      "ci95": [
+        -0.006874024602107689,
+        -0.001911882010403017
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.00404032949868736,
+      "ci95": [
+        -0.007112597495233408,
+        -0.0015409301011519124
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.001573668764574991,
+    "mae_cluster_bootstrap95": [
+      -0.0024441149051162,
+      -0.000772243834002539
+    ],
+    "fixed030_difference_new_minus_reference": -0.004533970906335097,
+    "fixed030_cluster_bootstrap95": [
+      -0.006874024602107689,
+      -0.001911882010403017
+    ],
+    "base600_q95_difference_new_minus_reference": -0.00404032949868736,
+    "base600_q95_cluster_bootstrap95": [
+      -0.007112597495233408,
+      -0.0015409301011519124
+    ]
+  },
+  {
+    "new": [
+      "steps",
+      3000,
+      "periodic"
+    ],
+    "reference": [
+      "epochs",
+      600,
+      "periodic"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.001009486704941166,
+      "ci95": [
+        -0.0018491446423053919,
+        -0.00021542106325453413
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.005679654929378015,
+      "ci95": [
+        -0.007994281904575472,
+        -0.0028311512430687154
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.005378682396650293,
+      "ci95": [
+        -0.007980824952119795,
+        -0.0024575797953985223
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.001009486704941166,
+    "mae_cluster_bootstrap95": [
+      -0.0018491446423053919,
+      -0.00021542106325453413
+    ],
+    "fixed030_difference_new_minus_reference": -0.005679654929378015,
+    "fixed030_cluster_bootstrap95": [
+      -0.007994281904575472,
+      -0.0028311512430687154
+    ],
+    "base600_q95_difference_new_minus_reference": -0.005378682396650293,
+    "base600_q95_cluster_bootstrap95": [
+      -0.007980824952119795,
+      -0.0024575797953985223
+    ]
+  },
+  {
+    "new": [
+      "epochs",
+      600,
+      "periodic"
+    ],
+    "reference": [
+      "epochs",
+      600,
+      "open"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.0009964216295069218,
+      "ci95": [
+        -0.0017528127674864135,
+        -0.0003261239028329918
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.0018907578904469116,
+      "ci95": [
+        -0.003593883175674418,
+        -0.00010110939993715078
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.0022965883720667815,
+      "ci95": [
+        -0.004471203779530301,
+        -5.173765620705606e-05
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.0009964216295069218,
+    "mae_cluster_bootstrap95": [
+      -0.0017528127674864135,
+      -0.0003261239028329918
+    ],
+    "fixed030_difference_new_minus_reference": -0.0018907578904469116,
+    "fixed030_cluster_bootstrap95": [
+      -0.003593883175674418,
+      -0.00010110939993715078
+    ],
+    "base600_q95_difference_new_minus_reference": -0.0022965883720667815,
+    "base600_q95_cluster_bootstrap95": [
+      -0.004471203779530301,
+      -5.173765620705606e-05
+    ]
+  },
+  {
+    "new": [
+      "epochs",
+      1800,
+      "periodic"
+    ],
+    "reference": [
+      "epochs",
+      1800,
+      "open"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": 0.00023694034880974573,
+      "ci95": [
+        -0.00024150385486008743,
+        0.0006956644280495362
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.0017720854791289174,
+      "ci95": [
+        -0.004377546604801467,
+        0.0012193815352290758
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.00252882821827606,
+      "ci95": [
+        -0.005513475386579379,
+        0.0011851954956421322
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": 0.00023694034880974573,
+    "mae_cluster_bootstrap95": [
+      -0.00024150385486008743,
+      0.0006956644280495362
+    ],
+    "fixed030_difference_new_minus_reference": -0.0017720854791289174,
+    "fixed030_cluster_bootstrap95": [
+      -0.004377546604801467,
+      0.0012193815352290758
+    ],
+    "base600_q95_difference_new_minus_reference": -0.00252882821827606,
+    "base600_q95_cluster_bootstrap95": [
+      -0.005513475386579379,
+      0.0011851954956421322
+    ]
+  },
+  {
+    "new": [
+      "epochs",
+      3000,
+      "periodic"
+    ],
+    "reference": [
+      "epochs",
+      3000,
+      "open"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.0001451269830485248,
+      "ci95": [
+        -0.0006526078193335751,
+        0.00025996646885796177
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.0035261954412002363,
+      "ci95": [
+        -0.006729724119206544,
+        -0.0010032405173131898
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.004485809022193665,
+      "ci95": [
+        -0.008234472181751882,
+        -0.0011773899628240146
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.0001451269830485248,
+    "mae_cluster_bootstrap95": [
+      -0.0006526078193335751,
+      0.00025996646885796177
+    ],
+    "fixed030_difference_new_minus_reference": -0.0035261954412002363,
+    "fixed030_cluster_bootstrap95": [
+      -0.006729724119206544,
+      -0.0010032405173131898
+    ],
+    "base600_q95_difference_new_minus_reference": -0.004485809022193665,
+    "base600_q95_cluster_bootstrap95": [
+      -0.008234472181751882,
+      -0.0011773899628240146
+    ]
+  },
+  {
+    "new": [
+      "steps",
+      3000,
+      "periodic"
+    ],
+    "reference": [
+      "steps",
+      3000,
+      "open"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.00043223956987309636,
+      "ci95": [
+        -0.0009143614919964011,
+        2.5947025763944567e-05
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": -0.0030364419134898298,
+      "ci95": [
+        -0.004237481523207759,
+        -0.0012226812609928868
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.003634941270029714,
+      "ci95": [
+        -0.005137911569804205,
+        -0.0012251262749848068
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.00043223956987309636,
+    "mae_cluster_bootstrap95": [
+      -0.0009143614919964011,
+      2.5947025763944567e-05
+    ],
+    "fixed030_difference_new_minus_reference": -0.0030364419134898298,
+    "fixed030_cluster_bootstrap95": [
+      -0.004237481523207759,
+      -0.0012226812609928868
+    ],
+    "base600_q95_difference_new_minus_reference": -0.003634941270029714,
+    "base600_q95_cluster_bootstrap95": [
+      -0.005137911569804205,
+      -0.0012251262749848068
+    ]
+  },
+  {
+    "new": [
+      "epochs",
+      3000,
+      "open"
+    ],
+    "reference": [
+      "steps",
+      3000,
+      "open"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.0027299155121165777,
+      "ci95": [
+        -0.0038850398340961228,
+        -0.0016760387353437433
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": 0.0004930510779115798,
+      "ci95": [
+        -0.0068823720080824664,
+        0.007909552806526892
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": 0.0007216804804871522,
+      "ci95": [
+        -0.007151700004851113,
+        0.009002874469426774
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.0027299155121165777,
+    "mae_cluster_bootstrap95": [
+      -0.0038850398340961228,
+      -0.0016760387353437433
+    ],
+    "fixed030_difference_new_minus_reference": 0.0004930510779115798,
+    "fixed030_cluster_bootstrap95": [
+      -0.0068823720080824664,
+      0.007909552806526892
+    ],
+    "base600_q95_difference_new_minus_reference": 0.0007216804804871522,
+    "base600_q95_cluster_bootstrap95": [
+      -0.007151700004851113,
+      0.009002874469426774
+    ]
+  },
+  {
+    "new": [
+      "epochs",
+      3000,
+      "periodic"
+    ],
+    "reference": [
+      "steps",
+      3000,
+      "periodic"
+    ],
+    "bootstrap_draws_requested": 2000,
+    "paired_seeds": 5,
+    "bootstrap_rule": "One shared cluster draw across all five seeds. If any seed has zero tail denominator, the whole draw is excluded for that metric. All retained means use exactly five seeds.",
+    "interpretation": "Conditional evaluation cluster-composition uncertainty, fixed fitted models; no independent-source validation or retraining CI.",
+    "all": {
+      "difference_new_minus_reference": -0.002442802925292005,
+      "ci95": [
+        -0.0033127383686779085,
+        -0.0016000873447847982
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "fixed030": {
+      "difference_new_minus_reference": 3.2975502011733157e-06,
+      "ci95": [
+        -0.007427897933321167,
+        0.0057956670490438315
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "base600_q95": {
+      "difference_new_minus_reference": -0.0001291872716767982,
+      "ci95": [
+        -0.008019882483939108,
+        0.006317832714737851
+      ],
+      "empty_draw_count": 0,
+      "valid_draw_count": 2000
+    },
+    "mae_difference_new_minus_reference": -0.002442802925292005,
+    "mae_cluster_bootstrap95": [
+      -0.0033127383686779085,
+      -0.0016000873447847982
+    ],
+    "fixed030_difference_new_minus_reference": 3.2975502011733157e-06,
+    "fixed030_cluster_bootstrap95": [
+      -0.007427897933321167,
+      0.0057956670490438315
+    ],
+    "base600_q95_difference_new_minus_reference": -0.0001291872716767982,
+    "base600_q95_cluster_bootstrap95": [
+      -0.008019882483939108,
+      0.006317832714737851
+    ]
+  }
+]

@@ -135,3 +135,23 @@ CI覆盖Python 3.10/3.11/3.12的安装、推理、逐表复算和模型核验。
 本次原环境实测：65份权重的26,000条推理结果全部与保存值一致；60标签周期模型、
 600标签双任务模型和Ridge的三个固定配置复跑，也与原结果一致。
 详见[验证记录](reproduce/release_validation.json)。这不是全部配置跨平台重训保证。
+
+
+## Additional controlled-model experiments (3,000 fitting labels)
+
+The original default predictor and Tables 1–5 are unchanged. New material is separate:
+
+```bash
+# Recompute the added graph/kernel/budget results (no ML dependencies needed)
+python reproduce/optimization/replay.py --output reproduced-optimization
+# Optional exact conditional-interval replay (NumPy required)
+python reproduce/optimization/replay.py --intervals --output reproduced-optimization
+# Use an explicitly named larger-budget model
+python -m polymer_dmpnn.optimization --arm periodic --seed 32101 --smiles '*CC*'
+# Run all ten models on the cross-publication APFE cohort and recompute metrics
+python reproduce/apfe/replay.py --download-reference --run-models --intervals --output apfe-fresh-inference
+```
+
+Install the project first (`python -m pip install .`) for model commands. The added [English replay guide](reproduce/optimization/README_English.md), [中文复算说明](reproduce/optimization/README.md) and [APFE guide](reproduce/apfe/README.md) distinguish saved-result replay, new inference and retraining. Batch prediction: `python -m polymer_dmpnn.optimization --input examples/polymers.csv --output predictions.csv`.
+
+The added package covers 70 groups/1,050 per-seed metric checks and 48 conditional intervals; ten additional frozen weights are provided. Internal MAE reached 0.01868 at 3,000 labels and 50 epochs, with label and optimization effects controlled separately. Transfer to 93 retained APFE candidates was substantially poorer (periodic MAE 0.09482, R² 0.0418); overall periodic superiority was not established there. These are amorphous-polymer MD predictions, not validated experimental conductivity values.

@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "source_url": "https://raw.githubusercontent.com/SJTU-MI/APFEforPI/bf01ab210d465f0f81960c1e5b69f9c3a2d77a6a/Simulation_data.csv",
+  "source_sha256": "2bd251615eaaefa30322c9ec35db9bdcfb1d31835b030e14cda3e148c49a883f",
+  "source_doi": "10.1039/D3TA03370H",
+  "methods": "https://arxiv.org/pdf/2403.15887",
+  "nominal_conditions": "amorphous RadonPy, production 300K, equilibration 300K/1atm; no identical per-row logs claimed",
+  "scope": "retrospective high-value-enriched candidate cohort, not independent experiments or random-population blind test",
+  "candidates": 93,
+  "models": 10,
+  "rows": 930,
+  "bootstrap": {
+    "seed": 610292,
+    "draws": 2000,
+    "unit": "shared candidate record across all paired seeds"
+  },
+  "expected_paired": [
+    {
+      "metric": "all",
+      "periodic_minus_open": -0.0005233680217960323,
+      "per_seed_differences": [
+        0.004608557457348158,
+        0.004375238471342599,
+        -0.0012522487793074602,
+        -0.004438950064176497,
+        -0.00590943719418696
+      ],
+      "ci95_conditional_candidate_record_resampling": [
+        -0.003672721872239433,
+        0.002244926186870522
+      ],
+      "valid_draws": 2000,
+      "empty_draws": 0,
+      "periodic_lower_error_seeds": 3
+    },
+    {
+      "metric": "fixed030",
+      "periodic_minus_open": -0.00017370811181204108,
+      "per_seed_differences": [
+        0.004220037897538928,
+        0.007735641688419977,
+        0.0017641682295273658,
+        -0.0071537793708175024,
+        -0.007434609003728974
+      ],
+      "ci95_conditional_candidate_record_resampling": [
+        -0.00413020785291042,
+        0.0032241610530682227
+      ],
+      "valid_draws": 2000,
+      "empty_draws": 0,
+      "periodic_lower_error_seeds": 2
+    },
+    {
+      "metric": "training_q95",
+      "periodic_minus_open": -0.0010750153954508584,
+      "per_seed_differences": [
+        0.004300003339013479,
+        0.006969165729252769,
+        -0.0006254774937057508,
+        -0.008224033178705892,
+        -0.007794735373108896
+      ],
+      "ci95_conditional_candidate_record_resampling": [
+        -0.005519616772811213,
+        0.0028338444632017602
+      ],
+      "valid_draws": 2000,
+      "empty_draws": 0,
+      "periodic_lower_error_seeds": 3
+    }
+  ],
+  "files": {
+    "expected_metrics.csv": "dc2e18f9b2019798933a6c7accd44174f9761c14eedc654fe3d155977b1f8888",
+    "predictions.csv": "ff336db589e60b211c91146e1bc3b2964a31116597c8ac50d9439184c62fa2af",
+    "cohort.csv": "081542c5543b3642bf81ddd7bfa6a86be1d6a47be3b25e58269bd3176dd1f964"
+  }
+}
